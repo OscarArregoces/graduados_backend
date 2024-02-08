@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitado al evento</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Roboto:ital,wght@0,300;1,300;1,400;1,500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "titulo titulo titulo"
+                "actividad actividad actividad"
+                "informacion informacion informacion"
+                "footer footer footer";
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 0.1fr 0.1fr 0.3fr 1fr 0.1fr;
+            width: 50%;
+            margin: auto;
+            height: 800px;
+        }
+
+        .header {
+            grid-area: header;
+            background-repeat: no-repeat;
+            width: 100%;
+        }
+
+        .titulo {
+            grid-area: titulo;
+            text-align: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
+            font-size: 2rem;
+        }
+
+        .actividad {
+            grid-area: actividad;
+            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            border-bottom: 1px solid orange;
+        }
+
+        .informacion {
+            grid-area: informacion;
+            display: flex;
+            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
+            align-items: center;
+            min-width: 300px;
+            border-bottom: 1px solid orange;
+
+        }
+
+        .informacion .informacion_image {
+            height: inherit;
+            width: 300px;
+            margin: auto;
+        }
+
+        .informacion .info {
+            display: inline-block;
+            /* flex-direction: column; */
+            width: 50%;
+            border-right: 1px solid orange;
+        }
+
+        .informacion .fecha {
+            display: inline-block;
+            height: 100px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .informacion .fecha img {
+            display: block;
+            height: auto;
+            border: 0;
+            max-width: 90px;
+            width: 100%;
+            align-self: center;
+            margin: auto;
+        }
+
+        .informacion .fecha span {
+            padding: 10px;
+            font-size: 1.3rem;
+            display: table;
+            margin: auto;
+        }
+
+        .informacion .hora {
+            display: inline-block;
+            height: 100px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+
+        .informacion .hora span {
+            padding: 10px;
+            font-size: 1.3rem;
+            display: table;
+            margin: auto;
+        }
+
+        .informacion .hora img {
+            display: block;
+            height: auto;
+            border: 0;
+            max-width: 90px;
+            width: 100%;
+            align-self: center;
+            margin: auto;
+        }
+
+        .informacion .lugar {
+            display: inline-block;
+            height: 100px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+
+        .informacion .lugar span {
+            padding: 10px;
+            font-size: 1.3rem;
+            text-transform: capitalize;
+            display: table;
+            margin: auto;
+        }
+
+        .informacion .lugar img {
+            display: block;
+            height: auto;
+            border: 0;
+            max-width: 90px;
+            width: 100%;
+            align-self: center;
+            margin: auto;
+        }
+
+        .informacion a {
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid orange;
+            text-decoration: none;
+            color: black;
+            margin-top: 10px;
+        }
+
+        .informacion a:hover {
+            background: orange;
+        }
+
+        .informacion .info .button {
+            width: 50%;
+            margin: 10px auto;
+            text-align: center;
+            display: block;
+        }
+
+        .footer {
+            grid-area: footer;
+            background-repeat: no-repeat;
+            width: 100%;
+        }
+    </style>
+</head>
+
+
+<!-- {
+        "id": 104,
+        "area": {
+            "id": 1,
+            "name": "Desarrollo"
+        },
+        "subArea": {
+            "id": 1,
+            "name": "Como crear una Startup",
+            "area": {
+                "id": 1,
+                "name": "Desarrollo"
+            }
+        },
+        "nombre_actividad": "Crear un software",
+        "responsable": "Nadie",
+        "fecha": "2022-10-13",
+        "hora": "3:00 PM",
+        "lugar": "riohacha",
+        "cupos": 100,
+        "descripcion": "ssss",
+        "objectivo": "Es un hecho establecido hace demasiado tiemp los años, algunas veces por accidente, otras veces a propósito (por ejemplo insertándole humor y cosas por el estilo).",
+        "tipo_actividad": {
+            "id": 1,
+            "name": "Charla"
+        }
+    } -->
+
+<body>
+    <div class="container">
+
+        <img class="header" src="http://44.203.185.252/media/img/header.png" />
+
+        <h1 class="titulo">{{nombre_actividad}} </h1>
+
+        <span class="actividad">
+            {{objectivo}}
+        </span>
+
+        <div class="informacion">
+            <div class="info">
+                <div class="fecha">
+                    <img src="http://44.203.185.252/media/img/fecha.png" alt="Fecha" width="90" data-bit="fit">
+                    <span>{{fecha}}</span>
+                </div>
+
+                <div class="hora">
+                    <img src="http://44.203.185.252/media/img/hora.png" alt="Hora" width="90" data-bit="fit">
+                    <span>{{hora}}</span>
+                </div>
+
+                <div class="lugar">
+                    <img src="http://44.203.185.252/media/img/lugar.png" alt="Lugar" width="90" data-bit="fit">
+                    <span>{{lugar}}</span>
+                </div>
+                <a href="{{url}}" class="button">Asistire</a>
+
+            </div>
+            <img src="http://44.203.185.252/media/img/graduados.png" alt="" width="100" class="informacion_image">
+        </div>
+
+
+
+
+        <img class="footer" src="http://44.203.185.252/media/img/footer.png" />
+    </div>
+
+</body>
+
+</html>

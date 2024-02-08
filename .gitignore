@@ -1,0 +1,8 @@
+example.log
+db.py
+*.log
+*env
+db.*
+dump.*
+*.txt
+*.profile
