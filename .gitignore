@@ -4,5 +4,4 @@ db.py
 *env
 db.*
 dump.*
-*.txt
 *.profile
