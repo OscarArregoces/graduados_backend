@@ -55,7 +55,7 @@ DB_DEVELOP_PORT = env("DB_DEVELOP_PORT")
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.db.backends.mysql",
         "NAME": DB_DEVELOP_NAME,
         "USER": DB_DEVELOP_USER,
         "PASSWORD": DB_DEVELOP_PASSWORD,
