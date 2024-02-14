@@ -66,6 +66,7 @@ THIRDS_APPS = [
 ]
 
 INSTALLED_APPS = COMMONS_APPS + INSTALLS_APPS + THIRDS_APPS
+
 MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
     "django.middleware.security.SecurityMiddleware",

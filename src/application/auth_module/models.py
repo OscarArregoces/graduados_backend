@@ -39,32 +39,14 @@ class User(AbstractUser, BaseModel):
     avatar = models.CharField(max_length=256, blank=True, null=True)
     roles = models.ManyToManyField(Group, related_name="user_roles", db_index=True)
 
-    # objects = UserManager()
     objects = UserManagers()
 
     class Meta:
-        # unique_together = (('username', 'email'))
         verbose_name = "Users"
         verbose_name_plural = "Users"
 
     def __str__(self) -> str:
         return self.username
-
-
-# class Roles(BaseModel):
-#     name = models.CharField(max_length=200, unique=True)
-#     status = models.BooleanField(default=True)
-#     users = models.ManyToManyField(
-#         User, through='User_roles', related_name='roles_user')
-#     resources = models.ManyToManyField(
-#         'Resources', through='Resources_roles', related_name='roles_resources')
-
-#     def __str__(self) -> str:
-#         return self.name
-
-#     class Meta:
-#         verbose_name = 'Roles'
-#         verbose_name_plural = 'Roles'
 
 
 class Persons(BaseModel):
@@ -100,22 +82,6 @@ class Persons(BaseModel):
         unique_together = ("name", "identification")
         verbose_name = "Persons"
         verbose_name_plural = "Persons"
-
-
-# class User_roles(BaseModel):
-#     status = models.BooleanField(default=True)
-#     userId = models.ForeignKey(
-#         User, on_delete=models.CASCADE, related_name='users')
-#     rolesId = models.ForeignKey(
-#         Group, on_delete=models.CASCADE, related_name='roles')
-
-#     def __str__(self) -> str:
-#         return self.userId.username + '-' + self.rolesId.name
-
-#     class Meta:
-#         unique_together = (('userId', 'rolesId'))
-#         verbose_name = 'User_roles'
-#         verbose_name_plural = 'user_roles'
 
 
 class Resources(BaseModel):
