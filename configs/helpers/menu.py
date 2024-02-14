@@ -174,7 +174,7 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/encuestas/mis-encuestas/",
-                "titulo": "Momentos",
+                "titulo": "Encuestas",
                 "items": [
                     {
                         "path": "/encuestas/mis-encuestas/llenar-encuestas/",
