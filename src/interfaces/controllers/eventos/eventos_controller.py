@@ -86,3 +86,6 @@ class EventosController(BaseController):
             filter={"area": area},
             order=["-id"],
         )
+    
+    def test(self):
+        return self.get()

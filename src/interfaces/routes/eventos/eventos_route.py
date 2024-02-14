@@ -41,5 +41,12 @@ router.register(
             method="delete",
             name=f"{name_base}_delete",
         ),
+        Route(
+            http_verb=HTTP_VERB_GET,
+            path="test",
+            controller=EventosController,
+            method="test",
+            name=f"{name_base}_test",
+        ),
     ]
 )

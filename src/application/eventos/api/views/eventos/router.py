@@ -53,5 +53,16 @@ class Router(SimpleRouter):
             },
             name="{basename}-delete",
             detail=True,
+        ),
+        Route(
+            url=router_base.get_url(f"{name_base}_test"),
+            mapping=router_base.map(f"{name_base}_test"),
+            initkwargs={
+                "viewset_factory": BaseViewSetFactory,
+                "http_method_names": ["get"],
+                "model": model,
+            },
+            name="{basename}-test",
+            detail=True,
         )
     ]

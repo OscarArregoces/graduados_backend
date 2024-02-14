@@ -80,7 +80,7 @@ class EventosViewSet(ViewSet):
     model = None
 
     def get_serializer_class(self):
-        if self.action in ["get"]:
+        if self.action in ["get","test"]:
             return EventosAsistenciaSerializersView
         return EventosSerializers
 
@@ -130,3 +130,8 @@ class EventosViewSet(ViewSet):
         )
 
         return Response(data=payload, status=status)
+    
+    def test(self, request, *args, **kwargs):
+        payload, status = self.controller.test()
+        return Response(data=payload, status=status)
+        
