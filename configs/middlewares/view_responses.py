@@ -41,8 +41,8 @@ class CustomResponseMiddleware(object):
                     content_type="application/json",
                     status=code,
                 )
-            if request.method in ["POST", "PUT", "DELETE"]:
-                cache.clear()
+            # if request.method in ["POST", "PUT", "DELETE"]:
+            #     cache.clear()
             parseResponse, code, render = create_response(
                 response.status_code, "Ok", decode, request.path, request.method
             )

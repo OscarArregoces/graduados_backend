@@ -9,7 +9,7 @@ class BaseView(APIView):
             return self.request.headers["meta"]
         return None
     
-    @method_decorator(cache_page(60*60*2))
+    # @method_decorator(cache_page(60*60*2))
     def get(self,request,*args, **kwargs):
         pass
     

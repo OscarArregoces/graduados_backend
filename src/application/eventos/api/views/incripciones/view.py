@@ -14,11 +14,12 @@ from src.send_email import send_notification_mail
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.utils import timezone
+from configs.helpers.PaginationView import DecoratorPaginateView
 
 CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
 
-@method_decorator(cache_page(CACHE_TTL), name="dispatch")
+# @method_decorator(cache_page(CACHE_TTL), name="dispatch")
 class InscripcionView(APIView):
     def get(self, request, *args, **kwargs):
         param = request.GET.get("evento", None)
@@ -47,7 +48,7 @@ class InscripcionView(APIView):
         return Response("Evento Not found", 404)
 
 
-@method_decorator(cache_page(CACHE_TTL), name="dispatch")
+# @method_decorator(cache_page(CACHE_TTL), name="dispatch")
 class InscripcionEventosView(APIView):
     def get_eventos_date(self, order, start_date, end_date):
         results = (
@@ -72,6 +73,7 @@ class InscripcionEventosView(APIView):
 
         return results
 
+    @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         status_evento = request.GET.get("status", None)
         order_evento = request.GET.get("order", "-id")
@@ -127,22 +129,27 @@ class InscripcionEventosView(APIView):
             eventos_asistencia, many=True
         )
 
-        return Response(resulstSerializers.data, 200)
+        return resulstSerializers.data
 
 
 class IncripcionSaveView(APIView):
     def post(self, request, *args, **kwargs):
-        evento = request.data.get("evento", None)
-        user = request.user
+       try:
+            evento = request.data.get("evento", None)
+            user = request.user
 
-        resulst = InscripcionesSerializers(data={"user": user.pk, "evento": evento})
+            resulst = InscripcionesSerializers(data={"user": user.pk, "evento": evento})
 
-        if resulst.is_valid():
-            inscripcion = resulst.save()
-            send_notification_mail.delay([inscripcion.user.email], user.pk, evento)  # type: ignore
-            return Response({"message": "Ok"}, status=200)
-
-        return Response(resulst.errors, status=400)
+            if resulst.is_valid():
+                resulst.save()
+                # inscripcion = resulst.save()
+                # send_notification_mail.delay([inscripcion.user.email], user.pk, evento)  # type: ignore
+                return Response("Ok", status=200)
+            
+            return Response(resulst.errors, status=400)
+       except Exception as e:
+            return Response(e.args, status=400)
+           
 
 
 class AsistenciaView(APIView):
