@@ -230,3 +230,13 @@ EmprendimientosSeed = [
         "Servicios de consultoría y asesoramiento en bienes raíces"
     ])
 ]
+
+
+CapacitacionesSeed = [
+    {"name": "Marketing Digital"},
+    {"name": "Gestión Financiera"},
+    {"name": "Desarrollo de Productos/Servicios"},
+    {"name": "Atención al Cliente"},
+    {"name": "Ventas y Negociación"},
+    {"name": "Gestión de Inventarios y Logística"},
+]

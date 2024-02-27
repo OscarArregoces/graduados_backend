@@ -56,6 +56,7 @@ urlpatterns = [
     path("pqrs/", include(f"{PATH_APP}.pqrs.api.urls")),
     path("reportes/", include(f"{PATH_APP}.reportes.api.urls")),
     path("clear/cache", clear_cache, name="clear-cache"),
+    
     re_path(
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),

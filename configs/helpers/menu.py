@@ -68,7 +68,7 @@ resources = [
                 "method": "GET",
                 "icono": "pi pi-user-minus",
                 "link": "/admin/usuarios/",
-                "titulo": "Usuarios",
+                "titulo": "Graduados",
                 "items": [
                     {
                         "path": "/admin/usuarios/gestionar/",
@@ -564,152 +564,172 @@ resources = [
     },
 ]
 
-resources_egresado = [
-    {
-        "id_padre": 0,
-        "path": "/inicio/",
-        "icono": "pi pi-home",
-        "method": "GET",
-        "link": "/inicio/",
-        "titulo": "Inicio",
-        "items": [
-            {
-                "path": "/inicio/datos-personales/",
-                "icono": "icon",
-                "link": "/inicio/datos-personales/",
-                "method": "GET",
-                "titulo": "Datos Personales",
-                "items": [
-                    {
-                        "path": "/inicio/datos-personales/actualizar-datos/",
-                        "icono": "icon",
-                        "method": "POST",
-                        "link": "/inicio/datos-personales/actualizar-datos/",
-                        "titulo": "Actualizar Datos",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "path": "/encuestas/",
-        "id_padre": 0,
-        "method": "GET",
-        "icono": "pi pi-book",
-        "link": "/encuestas/",
-        "titulo": "Encuestas",
-        "items": [
-            {
-                "path": "/encuestas/mis-encuestas/",
-                "icono": "icon",
-                "method": "GET",
-                "link": "/encuestas/mis-encuestas/",
-                "titulo": "Mis Encuestas",
-                "items": [
-                    {
-                        "path": "/encuestas/mis-encuestas/llenar-encuestas/",
-                        "icono": "icon",
-                        "method": "GET",
-                        "link": "/encuestas/mis-encuestas/llenar-encuestas/",
-                        "titulo": "LLenar encuestas",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "path": "/pqrs/",
-        "id_padre": 0,
-        "method": "GET",
-        "icono": "pi pi-folder",
-        "link": "/pqrs/",
-        "titulo": "PQRS",
-        "items": [
-            {
-                "path": "/pqrs/solicitud/",
-                "icono": "icon",
-                "link": "/pqrs/solicitud/",
-                "titulo": "Solicitudes",
-                "items": [
-                    {
-                        "path": "/pqrs/solicitud/crear/",
-                        "icono": "icon",
-                        "link": "/pqrs/solicitud/crear/",
-                        "titulo": "Crear",
-                    },
-                    {
-                        "path": "/pqrs/solicitud/mis-solicitudes/",
-                        "icono": "icon",
-                        "link": "/pqrs/solicitud/mis-solicitudes/",
-                        "titulo": "Mis Solicitudes",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "path": "/clasificados/",
-        "id_padre": 0,
-        "method": "GET",
-        "icono": "pi pi-briefcase",
-        "link": "/clasificados/",
-        "titulo": "Clasificados",
-        "items": [
-            {
-                "path": "/clasificados/emprendimientos/",
-                "icono": "icon",
-                "method": "GET",
-                "link": "/clasificados/emprendimientos/",
-                "titulo": "Emprendimientos",
-                "items": [
-                    {
-                        "path": "/clasificados/emprendimientos/ver",
-                        "icono": "icon",
-                        "method": "GET",
-                        "link": "/clasificados/emprendimientos/ver",
-                        "titulo": "Mostrar",
-                    },
-                    {
-                        "path": "/clasificados/emprendimientos/crear",
-                        "icono": "icon",
-                        "method": "GET",
-                        "link": "/clasificados/emprendimientos/crear",
-                        "titulo": "Crear",
-                    },
-                    {
-                        "path": "/clasificados/emprendimientos/mis-emprendimientos/",
-                        "icono": "icon",
-                        "link": "/clasificados/emprendimientos/mis-emprendimientos/",
-                        "titulo": "Mis Emprendimientos",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        "path": "/eventos/",
-        "id_padre": 0,
-        "method": "GET",
-        "icono": "pi pi-ticket",
-        "link": "/eventos/",
-        "titulo": "Eventos",
-        "items": [
-            {
-                "path": "/eventos/actividades/",
-                "icono": "icon",
-                "method": "GET",
-                "link": "/eventos/actividades/",
-                "titulo": "Actividades",
-                "items": [
-                    {
-                        "path": "/eventos/actividades/mis-actividades/",
-                        "icono": "icon",
-                        "method": "GET",
-                        "link": "/eventos/actividades/mis-actividades/",
-                        "titulo": "Mis Actividades",
-                    },
-                ],
-            },
-        ],
-    },
+resources_graduados = [
+	{"id": 1},
+	{"id": 2},
+	{"id": 3},
+	{"id": 17},
+	{"id": 22},
+	{"id": 23},
+	{"id": 24},
+	{"id": 25},
+	{"id": 27},
+	{"id": 30},
+	{"id": 36},
+	{"id": 37},
+	{"id": 38},
+	{"id": 42},
+	{"id": 50},
+	{"id": 51},
+	{"id": 53},
+	{"id": 56},
 ]
+# resources_egresado = [
+#     {
+#         "id_padre": 0,
+#         "path": "/inicio/",
+#         "icono": "pi pi-home",
+#         "method": "GET",
+#         "link": "/inicio/",
+#         "titulo": "Inicio",
+#         "items": [
+#             {
+#                 "path": "/inicio/datos-personales/",
+#                 "icono": "icon",
+#                 "link": "/inicio/datos-personales/",
+#                 "method": "GET",
+#                 "titulo": "Datos Personales",
+#                 "items": [
+#                     {
+#                         "path": "/inicio/datos-personales/actualizar-datos/",
+#                         "icono": "icon",
+#                         "method": "POST",
+#                         "link": "/inicio/datos-personales/actualizar-datos/",
+#                         "titulo": "Actualizar Datos",
+#                     },
+#                 ],
+#             },
+#         ],
+#     },
+#     {
+#         "path": "/encuestas/",
+#         "id_padre": 0,
+#         "method": "GET",
+#         "icono": "pi pi-book",
+#         "link": "/encuestas/",
+#         "titulo": "Encuestas",
+#         "items": [
+#             {
+#                 "path": "/encuestas/mis-encuestas/",
+#                 "icono": "icon",
+#                 "method": "GET",
+#                 "link": "/encuestas/mis-encuestas/",
+#                 "titulo": "Mis Encuestas",
+#                 "items": [
+#                     {
+#                         "path": "/encuestas/mis-encuestas/llenar-encuestas/",
+#                         "icono": "icon",
+#                         "method": "GET",
+#                         "link": "/encuestas/mis-encuestas/llenar-encuestas/",
+#                         "titulo": "LLenar encuestas",
+#                     },
+#                 ],
+#             },
+#         ],
+#     },
+#     {
+#         "path": "/pqrs/",
+#         "id_padre": 0,
+#         "method": "GET",
+#         "icono": "pi pi-folder",
+#         "link": "/pqrs/",
+#         "titulo": "PQRS",
+#         "items": [
+#             {
+#                 "path": "/pqrs/solicitud/",
+#                 "icono": "icon",
+#                 "link": "/pqrs/solicitud/",
+#                 "titulo": "Solicitudes",
+#                 "items": [
+#                     {
+#                         "path": "/pqrs/solicitud/crear/",
+#                         "icono": "icon",
+#                         "link": "/pqrs/solicitud/crear/",
+#                         "titulo": "Crear",
+#                     },
+#                     {
+#                         "path": "/pqrs/solicitud/mis-solicitudes/",
+#                         "icono": "icon",
+#                         "link": "/pqrs/solicitud/mis-solicitudes/",
+#                         "titulo": "Mis Solicitudes",
+#                     },
+#                 ],
+#             },
+#         ],
+#     },
+#     {
+#         "path": "/clasificados/",
+#         "id_padre": 0,
+#         "method": "GET",
+#         "icono": "pi pi-briefcase",
+#         "link": "/clasificados/",
+#         "titulo": "Clasificados",
+#         "items": [
+#             {
+#                 "path": "/clasificados/emprendimientos/",
+#                 "icono": "icon",
+#                 "method": "GET",
+#                 "link": "/clasificados/emprendimientos/",
+#                 "titulo": "Emprendimientos",
+#                 "items": [
+#                     {
+#                         "path": "/clasificados/emprendimientos/ver",
+#                         "icono": "icon",
+#                         "method": "GET",
+#                         "link": "/clasificados/emprendimientos/ver",
+#                         "titulo": "Mostrar",
+#                     },
+#                     {
+#                         "path": "/clasificados/emprendimientos/crear",
+#                         "icono": "icon",
+#                         "method": "GET",
+#                         "link": "/clasificados/emprendimientos/crear",
+#                         "titulo": "Crear",
+#                     },
+#                     {
+#                         "path": "/clasificados/emprendimientos/mis-emprendimientos/",
+#                         "icono": "icon",
+#                         "link": "/clasificados/emprendimientos/mis-emprendimientos/",
+#                         "titulo": "Mis Emprendimientos",
+#                     },
+#                 ],
+#             },
+#         ],
+#     },
+#     {
+#         "path": "/eventos/",
+#         "id_padre": 0,
+#         "method": "GET",
+#         "icono": "pi pi-ticket",
+#         "link": "/eventos/",
+#         "titulo": "Eventos",
+#         "items": [
+#             {
+#                 "path": "/eventos/actividades/",
+#                 "icono": "icon",
+#                 "method": "GET",
+#                 "link": "/eventos/actividades/",
+#                 "titulo": "Actividades",
+#                 "items": [
+#                     {
+#                         "path": "/eventos/actividades/mis-actividades/",
+#                         "icono": "icon",
+#                         "method": "GET",
+#                         "link": "/eventos/actividades/mis-actividades/",
+#                         "titulo": "Mis Actividades",
+#                     },
+#                 ],
+#             },
+#         ],
+#     },
+# ]

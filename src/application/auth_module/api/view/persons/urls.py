@@ -1,3 +1,4 @@
+from src.application.auth_module.api.view.carrera.view import CarreraView
 from ..modules import path
 
 
@@ -10,4 +11,9 @@ from src.application.auth_module.api.view.persons.persons import PersonViewSet
 
 router = Router()
 router.register("", viewset=PersonViewSet, basename="person")
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("perfil", CarreraView.as_view()),
+    
+]
+

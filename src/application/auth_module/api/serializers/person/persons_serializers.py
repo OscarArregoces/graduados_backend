@@ -1,3 +1,4 @@
+from attr import fields
 from ....models import Persons
 from rest_framework.serializers import (
     ModelSerializer,
@@ -16,24 +17,22 @@ from rest_framework.validators import UniqueValidator
 class PersonsSerializers(ModelSerializer):
     document_type = DocumentSerializersView(read_only=True)
     gender_type = GenderSerializersView(read_only=True)
-    user = UserSerializersSimple(read_only=True, expands=False)
+    identification = CharField( required=False)
+    email = CharField( required=False)
+    # user = UserSerializersSimple(read_only=True, expands=False)
 
     class Meta:
         model = Persons
-        exclude = ("createdAt", "updateAt", "visible")
+        exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
 
 
-class PersonsSimpleSerializersView(Serializer):
-    id = PrimaryKeyRelatedField(read_only=True)
-    name = CharField(read_only=True)
-    document_type = DocumentSerializersView(read_only=True)
-    surname = CharField(read_only=True)
-    identification = CharField(read_only=True)
-    address = CharField(read_only=True)
-    nationality = CharField(read_only=True)
-    date_of_birth = DateField(read_only=True)
+class PersonsSimpleSerializersView(ModelSerializer):
+
     gender_type = GenderSerializersView(read_only=True)
-    phone = CharField(read_only=True)
+    
+    class Meta:
+        model = Persons
+        fields = ('id','fullname','email','nationality','identification','gender_type')
 
 
 class PersonsSimpleSerializers(Serializer):
@@ -100,3 +99,30 @@ class PersonsSerializer(Serializer):
     nationality = CharField(write_only=True, required=False)
     date_of_birth = DateField(write_only=True, required=False)
     phone = CharField(write_only=True, required=False)
+
+
+class UsuariosExcelSerializersView(Serializer):
+    name = CharField()
+    nationality = CharField()
+    municipio = CharField()
+    departamento = CharField()
+    address = CharField()
+    condicion_vulnerable = CharField()
+    estado_civil = CharField()
+    phone = CharField()
+    phone2 = CharField()
+    email = CharField()
+    email2 = CharField()
+    programa = CharField()
+    sede = CharField()
+    modalidad_grado = CharField()
+    proyecto_grado = CharField()
+    periodo_grado = CharField()
+    numero_acta = CharField()
+    numero_folio = CharField()
+    saber_pro = CharField()
+    direccion_intitucional = CharField()
+    identification = CharField()
+    document_type = CharField()
+    genero = CharField()
+  

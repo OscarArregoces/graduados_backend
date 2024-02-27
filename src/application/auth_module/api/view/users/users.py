@@ -1,22 +1,33 @@
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView
 from rest_framework import status
+from configs.helpers.PaginationView import DecoratorPaginateView
+from configs.helpers.formatDate import formatDate
+from configs.helpers.excelTools import formateDocumentType, formateGenderType, formateNationaliy
+from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
+
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonsSerializer, PersonsSerializers, PersonsSimpleSerializersView, UsuariosExcelSerializersView
 from ...serializers.user.users_serializers import (
     UserSerializers,
     CreateUserSerializers,
     UserChangePassword,
 )
-from ....models import User
+from ....models import Carrera, Persons, User
+from django.contrib.auth.models import Group
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 from typing import Optional
 from src.factory.auth_interactor import AuthViewSetFactory
+import pandas as pd
 
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.db import transaction
 
 CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
@@ -109,3 +120,107 @@ class UserChangePasswordView(UpdateAPIView):
             return Response(user_serializers.errors, status=status.HTTP_400_BAD_REQUEST)
         except (AttributeError, Exception) as e:
             return Response(e.args, status.HTTP_400_BAD_REQUEST)
+         
+class GraduadosView(APIView):
+    @DecoratorPaginateView
+    def get(self, request, *args, **kwargs):
+        try:
+            personas = Persons.objects.exclude(id__in=[1, 2]).all()
+            serializer = PersonsSimpleSerializersView(personas, many=True)
+            return serializer.data
+        except Exception as e :
+           return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GraduadoDetailView(APIView):
+    def get(self, request, graduado_id, *args, **kwargs):
+        graduado = get_object_or_404(Persons, identification=graduado_id)
+        serializer = PersonsSimpleSerializersView(graduado)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+       
+class CargarUsuariosExcel(APIView):
+    
+    @transaction.atomic       
+    def post(self, request, *args, **kwargs):
+        archivo_excel = request.FILES.get('archivo_excel')
+        if archivo_excel:
+            try:
+                df = pd.read_excel(archivo_excel)
+
+                for index, row in df.iterrows():
+                    
+                    try:
+                        person_instancia = Persons.objects.get(identification=row['NUM_DOCUMENTO'])
+                        # Crear instancia de Carrera asociada a User
+                        carrera_data = {
+                            'programa': row['PROGRAMA DE GRADO'] if pd.notna(row['PROGRAMA DE GRADO']) else "",
+                            # 'fecha_grado': formatDate(row['FECHA DE GRADO']),
+                            'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
+                            'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
+                            'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",
+                            'numero_acta': row['NUMERO DE ACTA'] if pd.notna(row['NUMERO DE ACTA']) else "",
+                            'numero_folio': row['NUMERO DE FOLIO'] if pd.notna(row['NUMERO DE FOLIO']) else "",
+                            'sede': row['SEDE'] if pd.notna(row['SEDE']) else "",
+                            'direccion_intitucional': row['DIRECCION_INSTITUCIONAL'] if pd.notna(row['DIRECCION_INSTITUCIONAL']) else "",
+                            'person_id': person_instancia.pk
+                        }
+                        
+                        Carrera.objects.create(**carrera_data)
+                        
+                    except Persons.DoesNotExist:
+
+                        gender_type_id = formateGenderType(row['GENERO'])
+                        document_type_id = formateDocumentType(row['TIPO_IDENTIFICACION'])
+                        nationality = formateNationaliy(row['PAIS DE NACIMIENTO'])
+
+                        person_data = {
+                            'fullname': row['NOMBRE'] if pd.notna(row['NOMBRE']) else "",
+                            'identification': row['NUM_DOCUMENTO'] if pd.notna(row['NUM_DOCUMENTO']) else "",
+                            'address': row['DIRECCION'] if pd.notna(row['DIRECCION']) else "",
+                            'nationality': nationality,
+                            'phone': row['CELULAR'] if pd.notna(row['CELULAR']) else "",
+                            'phone2': row['CELULAR 2'] if pd.notna(row['CELULAR 2']) else "",
+                            # 'fecha_expedicion': formatDate(row['FECHA_EXPEDICION']), 
+                            # 'date_of_birth': formatDate(row['FECHA_NACIMIENTO']), 
+                            'condicion_vulnerable': row['CONDICION VULNERABLE'] if pd.notna(row['CONDICION VULNERABLE']) else "",
+                            'municipio': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
+                            'departamento': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
+                            'email': row['CORREO'] if pd.notna(row['CORREO']) else "",
+                            'email2': row['CORREO 2'] if pd.notna(row['CORREO 2']) else "",
+                            'document_type_id': document_type_id,
+                            'gender_type_id': gender_type_id,
+                        }
+                        
+                        persons_instance = Persons.objects.create(**person_data)
+                        
+                        user_data = {
+                            'username': str(row['NUM_DOCUMENTO']),
+                            'password': make_password(str(row['NUM_DOCUMENTO'])),
+                            'person_id': persons_instance.pk,
+                        }
+                        
+                        user_instance= User.objects.create(**user_data)
+                        
+                        rol_especifico, creado = Group.objects.get_or_create(name='Graduado')
+                        user_instance.groups.add(rol_especifico)
+                        user_instance.save()
+                                                
+                        carrera_data = {
+                            'programa': row['PROGRAMA DE GRADO'],
+                            # 'fecha_grado': formatDate(row['FECHA DE GRADO']),
+                            'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
+                            'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
+                            'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",
+                            'numero_acta': row['NUMERO DE ACTA'] if pd.notna(row['NUMERO DE ACTA']) else "",
+                            'numero_folio': row['NUMERO DE FOLIO'] if pd.notna(row['NUMERO DE FOLIO']) else "",
+                            'sede': row['SEDE'] if pd.notna(row['SEDE']) else "",
+                            'direccion_intitucional': row['DIRECCION_INSTITUCIONAL'] if pd.notna(row['DIRECCION_INSTITUCIONAL']) else "",
+                            'person_id': persons_instance.pk
+                        }
+                        
+                        Carrera.objects.create(**carrera_data)
+                        
+                return Response({'message': 'Usuarios cargados correctamente'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': f'Error al procesar el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'No se proporcionó un archivo Excel'}, status=status.HTTP_400_BAD_REQUEST)

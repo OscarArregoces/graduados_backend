@@ -21,8 +21,6 @@ class PersonViewSet(ViewSet):
     http_method_names: Optional[list[str]] = []
     model = None
 
-    serializer_class = PersonsSerializers
-
     def get_serializer_class(self):
         if self.action in ["get"]:
             return PersonsSimpleSerializersView

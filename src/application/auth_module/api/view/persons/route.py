@@ -1,5 +1,5 @@
 from rest_framework.routers import Route, SimpleRouter
-from src.factory.base_interactor import BaseViewSetFactory
+from src.factory.auth_interactor import AuthViewSetFactory
 from src.interfaces.routes.auth_module.person_route import router
 from src.application.auth_module.models import Persons
 
@@ -14,7 +14,7 @@ class Router(SimpleRouter):
             url=router_base.get_url(f"{name_base}_get"),
             mapping=router_base.map(f"{name_base}_get"),
             initkwargs={
-                "viewset_factory": BaseViewSetFactory,
+                "viewset_factory": AuthViewSetFactory,
                 "http_method_names": ["get"],
                 "model": model,
             },
@@ -25,7 +25,7 @@ class Router(SimpleRouter):
             url=router_base.get_url(f"{name_base}_post"),
             mapping=router_base.map(f"{name_base}_post"),
             initkwargs={
-                "viewset_factory": BaseViewSetFactory,
+                "viewset_factory": AuthViewSetFactory,
                 "http_method_names": ["post"],
                 "model": model,
             },
@@ -36,7 +36,7 @@ class Router(SimpleRouter):
             url=router_base.get_url(f"{name_base}_put"),
             mapping=router_base.map(f"{name_base}_put"),
             initkwargs={
-                "viewset_factory": BaseViewSetFactory,
+                "viewset_factory": AuthViewSetFactory,
                 "http_method_names": ["put"],
                 "model": model,
             },
@@ -47,7 +47,7 @@ class Router(SimpleRouter):
             url=router_base.get_url(f"{name_base}_delete"),
             mapping=router_base.map(f"{name_base}_delete"),
             initkwargs={
-                "viewset_factory": BaseViewSetFactory,
+                "viewset_factory": AuthViewSetFactory,
                 "http_method_names": ["delete"],
                 "model": model,
             },

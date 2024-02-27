@@ -24,10 +24,11 @@ class PersonsSimpleSerializers(serializers.Serializer):
 
 class UserSerializersSimple(serializers.Serializer):
     username = serializers.CharField(read_only=True)
-    email = serializers.EmailField(read_only=True)
+    # email = serializers.EmailField(read_only=True)
 
     class Meta:
-        fields = ("username", "email")
+        # fields = ("username", "email")
+        fields = ("username")
 
     def __init__(self, instance=None, data=..., **kwargs):
         expands = kwargs.pop("expands", True)
@@ -42,7 +43,7 @@ class UserSerializers(serializers.Serializer):
     username = serializers.CharField(read_only=True)
     name = serializers.CharField(read_only=True)
     surname = serializers.CharField(read_only=True)
-    email = serializers.CharField(read_only=True)
+    # email = serializers.CharField(read_only=True)
     groups = RolesSerializers(read_only=True, many=True)
 
     class Meta:
@@ -50,18 +51,10 @@ class UserSerializers(serializers.Serializer):
 
 
 class CreateUserSerializers(serializers.Serializer):
-    username = serializers.SlugField(
-        max_length=100, validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    email = serializers.CharField()
-    persona = PersonsSimpleSerializers()
-
-    class Meta:
-        model = User
-        # validators = [UserValidatorBefore()]
+    username = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        validated_data["password"] = make_password(validated_data["password"])
         return User.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
@@ -69,7 +62,7 @@ class CreateUserSerializers(serializers.Serializer):
             with atomic():
                 
                 instance.username = validated_data.get("username", instance.username)
-                instance.email = validated_data.get("email", instance.email)
+                # instance.email = validated_data.get("email", instance.email)
 
                 person = Persons.objects.get(user__id=instance.pk)
                 persona = validated_data.get("persona", {})

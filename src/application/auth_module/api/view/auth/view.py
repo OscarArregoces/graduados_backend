@@ -8,8 +8,7 @@ from django.contrib.auth import logout
 from rest_framework import status
 from django.http import HttpResponse
 from django.contrib.auth import login
-from ....models import Resources
-
+from ....models import Resources, User, Persons
 
 class AuthLogin(APIView):
     def get_tokens_for_user(self, user):
@@ -20,13 +19,6 @@ class AuthLogin(APIView):
         }
 
     def post(self, request, *args, **kwargs):
-        data = {}
-        if "email" in request.data:
-            data["username"] = request.data["email"]
-            data["password"] = request.data["password"]
-        else:
-            data = request.data
-
         serializers = LoginSerializers(
             data=request.data, context={"request": self.request}
         )
@@ -45,7 +37,7 @@ class AuthLogin(APIView):
 
         menu = ResourcesSerializers(resources, many=True)
 
-        persons = serializers.validated_data.persons_set.first()  # type: ignore
+        persons = Persons.objects.filter(id=serializers.validated_data.person_id).first()
         request.session["refresh-token"] = token["refresh"]
         return Response(
             {
@@ -53,7 +45,7 @@ class AuthLogin(APIView):
                 "user": {
                     "name": serializers.validated_data.username,  # type: ignore
                     "id": serializers.validated_data.id,
-                    "full_name": f"{persons.name} {persons.surname}",
+                    "full_name": persons.fullname if hasattr(persons, 'fullname') else "",
                 },  # type: ignore
                 "menu": menu.data,
             },

@@ -55,9 +55,8 @@ class RegisterSerializers(serializers.Serializer):
 
 class LoginSerializers(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
-    username = serializers.CharField(label="Email/username")
+    username = serializers.CharField(label="username")
     password = serializers.CharField()
-    person = PersonsSimpleSerializersView(read_only=True)
 
     def validate(self, attrs):
         user = authenticate(**attrs)

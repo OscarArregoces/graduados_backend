@@ -12,9 +12,6 @@ class AuthModuleController(BaseController):
     def __init__(self, repo, serializer) -> None:
         super().__init__(repo, serializer)
 
-    def post(self, data, extra=...):
-        return super().post(data, extra)
-
     def get_roles(self, group):
         excluded_apps = {
             "admin",
@@ -125,7 +122,7 @@ class AuthModuleController(BaseController):
             list_user.append(
                 {
                     "id": i.user.pk,
-                    "email": i.user.email if i.user else None,
+                    # "email": i.user.email if i.user else None,
                     "persona": {
                         "name": i.name,
                         "surname": i.surname,
