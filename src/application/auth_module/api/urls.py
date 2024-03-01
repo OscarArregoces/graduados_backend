@@ -14,4 +14,5 @@ urlpatterns = [
     path("documents/", include(f"{PATH_APP}.auth_module.api.view.documents.urls")),
     path("security/", include(f"{PATH_APP}.auth_module.api.view.security.urls")),
     path("university/", include(f"{PATH_APP}.auth_module.api.view.university.urls")),
+    path("condiciones/", include(f"{PATH_APP}.auth_module.api.view.condiciones.urls")),
 ]

@@ -1,4 +1,6 @@
+from ast import Return
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView
@@ -8,7 +10,8 @@ from configs.helpers.formatDate import formatDate
 from configs.helpers.excelTools import formateDocumentType, formateGenderType, formateNationaliy
 from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
 
-from src.application.auth_module.api.serializers.person.persons_serializers import PersonsSerializer, PersonsSerializers, PersonsSimpleSerializersView, UsuariosExcelSerializersView
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSerializers, PersonsSimpleSerializersView
+from src.application.auth_module.api.serializers.roles.roles_serializers import RolesSerializers
 from ...serializers.user.users_serializers import (
     UserSerializers,
     CreateUserSerializers,
@@ -125,20 +128,88 @@ class GraduadosView(APIView):
     @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         try:
-            personas = Persons.objects.exclude(id__in=[1, 2]).all()
+            personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
             serializer = PersonsSimpleSerializersView(personas, many=True)
             return serializer.data
         except Exception as e :
            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class GraduadoView(APIView):
+    def get(self, request, graduado_id, *args, **kwargs):
+        graduado = get_object_or_404(Persons, identification=graduado_id, graduado=True)
+        serializer = PersonsSimpleSerializersView(graduado)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 class GraduadoDetailView(APIView):
     def get(self, request, graduado_id, *args, **kwargs):
         graduado = get_object_or_404(Persons, identification=graduado_id)
-        serializer = PersonsSimpleSerializersView(graduado)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if graduado is None:
+            return Response("Graduado not found", status=404)
+        
+        carreras = Carrera.objects.filter(person=graduado)
+        carrera_serializer = CarreraSerializers(carreras, many=True)
+        persona_serializer = PersonsDetailSerializers(graduado)
+        
+        return Response({
+            "persona": persona_serializer.data,
+            "carreras": carrera_serializer.data
+            }, status=status.HTTP_200_OK)
+        
+class FuncionariosView(APIView):
+    @DecoratorPaginateView
+    def get(self, request, *args, **kwargs):
+        try:
+            personas = Persons.objects.filter(funcionario=True).exclude(id__in=[1, 2]).all()
+            serializer = PersonsSimpleSerializersView(personas, many=True)
+            return serializer.data
+        except Exception as e :
+           return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
        
+    @transaction.atomic       
+    def post(self, request, *args, **kwargs):
+        persons_serializer = PersonsCreateSerializer(data=request.data)
+        if persons_serializer.is_valid():
+            persona = persons_serializer.save()
+            identification = request.data['identification']
+            usuario_data = {
+                'username': str(identification),
+                'password': make_password(str(identification)),
+                'person_id': persona.id,
+            }
+            usuario_serializer = CreateUserSerializers(data=usuario_data)
+            if usuario_serializer.is_valid():
+                usuario_serializer.save()
+                return Response({'message': 'Funcionario creadocorrectamente'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': persons_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class FuncionarioView(APIView):
+    def get(self, request, funcionario_id, *args, **kwargs):
+        # funcionario = get_object_or_404(Persons, identification=funcionario_id, funcionario=True)
+        funcionario = Persons.objects.filter(
+            identification=funcionario_id,
+            funcionario=True
+        ).exclude(id__in=[1, 2]).first()
+        
+        serializer = PersonsSimpleSerializersView(funcionario)
+        usuario = User.objects.filter(person=funcionario).first()
+        if usuario:
+            groups = Group.objects.filter(user=usuario).all()
+            roles_serializer = RolesSerializers(groups, many=True)
+            
+            response_data = {
+                'persona': serializer.data,
+                'roles': roles_serializer.data
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            # Manejar el caso en el que el usuario no existe
+            return Response({'error': 'El usuario asociado al funcionario no existe.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+
 class CargarUsuariosExcel(APIView):
-    
     @transaction.atomic       
     def post(self, request, *args, **kwargs):
         archivo_excel = request.FILES.get('archivo_excel')
@@ -147,13 +218,11 @@ class CargarUsuariosExcel(APIView):
                 df = pd.read_excel(archivo_excel)
 
                 for index, row in df.iterrows():
-                    
                     try:
                         person_instancia = Persons.objects.get(identification=row['NUM_DOCUMENTO'])
-                        # Crear instancia de Carrera asociada a User
                         carrera_data = {
                             'programa': row['PROGRAMA DE GRADO'] if pd.notna(row['PROGRAMA DE GRADO']) else "",
-                            # 'fecha_grado': formatDate(row['FECHA DE GRADO']),
+                            'fecha_grado': formatDate(row['FECHA DE GRADO']),
                             'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
                             'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
                             'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",
@@ -179,8 +248,8 @@ class CargarUsuariosExcel(APIView):
                             'nationality': nationality,
                             'phone': row['CELULAR'] if pd.notna(row['CELULAR']) else "",
                             'phone2': row['CELULAR 2'] if pd.notna(row['CELULAR 2']) else "",
-                            # 'fecha_expedicion': formatDate(row['FECHA_EXPEDICION']), 
-                            # 'date_of_birth': formatDate(row['FECHA_NACIMIENTO']), 
+                            'fecha_expedicion': formatDate(row['FECHA_EXPEDICION']), 
+                            'date_of_birth': formatDate(row['FECHA_NACIMIENTO']), 
                             'condicion_vulnerable': row['CONDICION VULNERABLE'] if pd.notna(row['CONDICION VULNERABLE']) else "",
                             'municipio': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
                             'departamento': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
@@ -206,7 +275,7 @@ class CargarUsuariosExcel(APIView):
                                                 
                         carrera_data = {
                             'programa': row['PROGRAMA DE GRADO'],
-                            # 'fecha_grado': formatDate(row['FECHA DE GRADO']),
+                            'fecha_grado': formatDate(row['FECHA DE GRADO']),
                             'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
                             'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
                             'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",

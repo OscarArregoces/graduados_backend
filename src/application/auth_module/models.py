@@ -55,14 +55,17 @@ class Persons(BaseModel):
     municipio = models.CharField(blank=True, default="", max_length=100)
     departamento = models.CharField(blank=True, default="", max_length=100)
     email = models.EmailField(_("email address"), blank=False, default="", unique=False)
-    email2 = models.EmailField(_("email address"), blank=True, default="", unique=False)
+    email2 = models.EmailField(_("email address"), blank=True, unique=False)
     graduado = models.BooleanField(blank=True, default=True)
     funcionario = models.BooleanField(blank=True, default=False)
     
     status = models.BooleanField(default=True)
 
     document_type = models.ForeignKey(
-        Document_types, on_delete=models.SET_NULL, blank=True, null=True
+        Document_types,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
     )
     gender_type = models.ForeignKey(
         Genders,

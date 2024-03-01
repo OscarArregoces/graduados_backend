@@ -1,12 +1,7 @@
 from datetime import datetime
+import pandas as pd
 
-def formatDate(input_fecha):
-    # Convertir la fecha de cadena a objeto datetime
-    fecha_obj = datetime.strptime(str(input_fecha), "%Y-%m-%d %H:%M:%S")
-    # 2008-05-01 
-    # 2024-02-23
-    
-    # Formatear la fecha en el nuevo formato
-    fecha_formateada = fecha_obj.strftime("Y%-%m-%d")
-    
-    return fecha_formateada
+def formatDate(date_value):
+    if pd.isnull(date_value) or date_value == 'NaT':
+      return None
+    return date_value

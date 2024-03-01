@@ -1,9 +1,11 @@
 from attr import fields
-from ....models import Persons
+from django.forms import BooleanField
+from ....models import Document_types, Genders, Persons
 from rest_framework.serializers import (
     ModelSerializer,
     Serializer,
     CharField,
+    EmailField,
     DateField,
     IntegerField,
     PrimaryKeyRelatedField,
@@ -14,18 +16,77 @@ from ..user.users_serializers import UserSerializersSimple
 from rest_framework.validators import UniqueValidator
 
 
-class PersonsSerializers(ModelSerializer):
-    document_type = DocumentSerializersView(read_only=True)
-    gender_type = GenderSerializersView(read_only=True)
-    identification = CharField( required=False)
-    email = CharField( required=False)
+class PersonsSerializers(Serializer):
+    document_type = DocumentSerializersView(required=False)
+    gender_type = GenderSerializersView(required=False)
+    address = CharField(required=False)
+    nationality = CharField(required=False)
+    date_of_birth = CharField(required=False)
+    phone2 = CharField(required=False)
+    email2 = CharField(required=False, allow_blank=True)
+    document_type = IntegerField(required=False)
+    gender_type = IntegerField(required=False)
     # user = UserSerializersSimple(read_only=True, expands=False)
 
     class Meta:
         model = Persons
         exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
+    
+    def create(self, validated_data):
+        document_type_id = validated_data.pop('document_type', None)
+        gender_type_id = validated_data.pop('gender_type', None)
+
+        if document_type_id:
+            validated_data['document_type'] = Document_types.objects.get(pk=document_type_id)
+
+        if gender_type_id:
+            validated_data['gender_type'] = Genders.objects.get(pk=gender_type_id)
+            
+        
+        return Persons.objects.create(**{**validated_data, 'email2':None,})
+    
+    # def create(self, validated_data):
+    #     return Persons.objects.create(**validated_data)
 
 
+class PersonsCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Persons
+        fields = (
+            'id', 'fullname', 'identification', 'address', 'nationality',
+            'date_of_birth', 'phone', 'phone2', 'fecha_expedicion',
+            'condicion_vulnerable', 'municipio', 'departamento',
+            'email', 'email2', 'graduado', 'funcionario', 'status',
+            'document_type', 'gender_type'
+        )
+        extra_kwargs = {
+            'fullname': {'required': True},
+            'identification': {'required': True},
+            'email': {'required': True},
+            'phone': {'required': True},
+        }
+
+    def validate_date_of_birth(self, value):
+        # Si la fecha de nacimiento es una cadena vacía, establecerla como None
+        if value == "":
+            return None
+        return value
+
+    def validate_fecha_expedicion(self, value):
+        # Si la fecha de expedición es una cadena vacía, establecerla como None
+        if value == "":
+            return None
+        return value
+
+    def create(self, validated_data):
+        # Puedes personalizar la lógica de creación aquí si es necesario
+        return Persons.objects.create(**validated_data)
+
+class PersonsDetailSerializers(ModelSerializer):
+     class Meta:
+        model = Persons
+        exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
+    
 class PersonsSimpleSerializersView(ModelSerializer):
 
     gender_type = GenderSerializersView(read_only=True)
@@ -35,59 +96,8 @@ class PersonsSimpleSerializersView(ModelSerializer):
         fields = ('id','fullname','email','nationality','identification','gender_type')
 
 
-class PersonsSimpleSerializers(Serializer):
-    name = CharField()
-    document_type = IntegerField()
-    surname = CharField()
-    identification = IntegerField()
-    address = CharField()
-    nationality = CharField()
-    date_of_birth = DateField()
-    gender_type = CharField()
-    phone = CharField()
-
-    class Meta:
-        fields = "__all__"
-
-    def create(self, validated_data):
-        person = Persons.objects.create(
-            name=validated_data["name"],
-            document_type_id=validated_data["document_type"],
-            surname=validated_data["surname"],
-            identification=validated_data["identification"],
-            address=validated_data["address"],
-            nationality=validated_data["nationality"],
-            date_of_birth=validated_data["date_of_birth"],
-            gender_type_id=validated_data["gender_type"],
-            phone=validated_data["phone"],
-        )
-        return person
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get("name", instance.name)
-        instance.document_type_id = validated_data.get(
-            "document_type", instance.document_type
-        )
-        instance.surname = validated_data.get("surname", instance.surname)
-        instance.identification = validated_data.get(
-            "identification", instance.identification
-        )
-        instance.address = validated_data.get("address", instance.address)
-        instance.nationality = validated_data.get("nationality", instance.nationality)
-        instance.date_of_birth = validated_data.get(
-            "date_of_birth", instance.date_of_birth
-        )
-        instance.gender_type_id = validated_data.get(
-            "gender_type", instance.gender_type
-        )
-        instance.phone = validated_data.get("phone", instance.phone)
-
-        instance.save()
-        return instance
-
 
 queryset = Persons.objects.all()
-
 
 class PersonsSerializer(Serializer):
     name = CharField(write_only=True, validators=[UniqueValidator(queryset=queryset)])
@@ -125,4 +135,23 @@ class UsuariosExcelSerializersView(Serializer):
     identification = CharField()
     document_type = CharField()
     genero = CharField()
+  
+# class FuncionarioSerializers(Serializer):
+#     fullname  = CharField()
+#     identification  = CharField()
+#     address  = CharField()
+#     nationality  = CharField()
+#     date_of_birth  = DateField()
+#     phone  = CharField()
+#     phone2  = CharField()
+#     fecha_expedicion  = DateField()
+#     condicion_vulnerable  = CharField()
+#     municipio  = CharField()
+#     departamento  = CharField()
+#     email  = CharField()
+#     email2  = CharField()
+#     graduado  = BooleanField()
+#     funcionario  = BooleanField()
+#     document_type = IntegerField()
+#     gender_type = IntegerField()
   

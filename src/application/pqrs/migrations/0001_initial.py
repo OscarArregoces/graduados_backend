@@ -8,7 +8,7 @@ from configs.helpers.menu import resources as menu_resources, resources_graduado
 from configs.helpers.menu_resources import menuResources
 from django.contrib.auth.models import Group
 from configs.seeds.EventosSeed import AreasActividadSeed, SubareasActividadSeed, TipoActividadSeed
-from configs.seeds.AuthSeed import CarrerasSeed, CondicionesSeed, DocumentTypeSeed, GendersSeed, GestoresSeed, GroupsSeed, PersonsSeed, UsersSeed
+from configs.seeds.AuthSeed import CondicionesSeed, DocumentTypeSeed, GendersSeed, GestoresSeed, GroupsSeed, PersonsSeed, UsersSeed
 from configs.seeds.ClasificadosSeed import CapacitacionesSeed, EmprendimientosSeed
 
 class Migration(migrations.Migration):
@@ -74,9 +74,6 @@ class Migration(migrations.Migration):
         
         User.objects.bulk_create([User(**data) for data in UsersSeed])
         
-        Carrera = apps.get_model("auth_module", "Carrera") # type: ignore
-        Carrera.objects.bulk_create([Carrera(**data) for data in CarrerasSeed])
-        
         user = User.objects.all()
         roles = Group.objects.all()
         list_user_roles = []
@@ -107,7 +104,7 @@ class Migration(migrations.Migration):
             if rol.name == "Graduado":
                 for r in resources_graduados:
                     resource_instance = Resources.objects.get(id=r["id"])
-                    list_resources_roles.append(Resources_roles(rolesId_id=rol.id, resourcesId=resource_instance))
+                    list_resources_roles.append(Resources_roles(rolesId_id=rol.id, resourcesId=resource_instance))  # type: ignore
             if rol.name == "Admin":
                 for r in resources:
                     list_resources_roles.append(

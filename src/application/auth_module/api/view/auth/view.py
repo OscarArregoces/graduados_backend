@@ -1,16 +1,15 @@
 from rest_framework.views import APIView
-from ...serializers.auth.auth_serializers import LoginSerializers, RegisterSerializers
+from ...serializers.auth.auth_serializers import LoginSerializers
 from ...serializers.resources.resources_serializers import ResourcesSerializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth import logout
 from rest_framework import status
 from django.http import HttpResponse
 from django.contrib.auth import login
-from ....models import Resources, User, Persons
+from ....models import Resources, Persons
 
-class AuthLogin(APIView):
+class AuthLoginFuncionario(APIView):
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         return {
@@ -24,6 +23,13 @@ class AuthLogin(APIView):
         )
         if not serializers.is_valid():
             return Response(serializers.errors, status.HTTP_400_BAD_REQUEST)
+
+        # Check if the user is a funcionario
+        if not serializers.validated_data.person.funcionario:
+            return Response(
+                {"error": "Unauthorized access for non-funcionario users."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         login(request, serializers.validated_data)  # type: ignore
         token = self.get_tokens_for_user(serializers.validated_data)
@@ -52,19 +58,54 @@ class AuthLogin(APIView):
             status.HTTP_200_OK,
         )
 
-
-class AuthRegister(APIView):
-    serializer_class = RegisterSerializers
+class AuthLoginGraduado(APIView):
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
 
     def post(self, request, *args, **kwargs):
-        registerUser = RegisterSerializers(data=request.data)
-        if registerUser.is_valid():
-            password = make_password(
-                registerUser.validated_data["password"]
-            )  # type:ignore
-            registerUser.save(password=password, persona=request.data["persona"])
-            return Response("Registro Exitosos", status.HTTP_200_OK)
-        return Response(registerUser.errors, status.HTTP_400_BAD_REQUEST)
+        serializers = LoginSerializers(
+            data=request.data, context={"request": self.request}
+        )
+        if not serializers.is_valid():
+            return Response(serializers.errors, status.HTTP_400_BAD_REQUEST)
+
+        # Check if the user is a funcionario
+        if not serializers.validated_data.person.graduado:
+            return Response(
+                {"error": "Unauthorized access for non-graduado users."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        login(request, serializers.validated_data)  # type: ignore
+        token = self.get_tokens_for_user(serializers.validated_data)
+
+        resources = (
+            Resources.objects.defer("createdAt", "updateAt")
+            .distinct()
+            .filter(roles__in=serializers.validated_data.groups.all())
+            .order_by("pk")
+        )  # type:ignore
+
+        menu = ResourcesSerializers(resources, many=True)
+
+        persons = Persons.objects.filter(id=serializers.validated_data.person_id).first()
+        request.session["refresh-token"] = token["refresh"]
+        return Response(
+            {
+                "token": token,
+                "user": {
+                    "name": serializers.validated_data.username,  # type: ignore
+                    "id": serializers.validated_data.id,
+                    "full_name": persons.fullname if hasattr(persons, 'fullname') else "",
+                },  # type: ignore
+                "menu": menu.data,
+            },
+            status.HTTP_200_OK,
+        )
 
 
 class LogoutView(APIView):

@@ -31,7 +31,7 @@ resources = [
         "id_padre": 0,
         "icono": "pi pi-th-large",
         "link": "/admin/",
-        "titulo": "Admin",
+        "titulo": "Administrador",
         "items": [
             {
                 "path": "/admin/roles/",
@@ -45,7 +45,7 @@ resources = [
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/roles/usuarios/",
-                        "titulo": "Usuarios",
+                        "titulo": "Administrativos",
                     },
                     {
                         "path": "/admin/roles/permisos/",
@@ -181,7 +181,7 @@ resources = [
                         "method": "GET",
                         "icono": "icon",
                         "link": "/encuestas/mis-encuestas/llenar-encuestas/",
-                        "titulo": "Llenar Encuestas",
+                        "titulo": "Mis Encuestas",
                     }
                 ],
             },
@@ -203,6 +203,13 @@ resources = [
                 "titulo": "Solicitud",
                 "items": [
                     {
+                        "path": "/pqrs/solicitud/crear/",
+                        "method": "POST",
+                        "icono": "icon",
+                        "link": "/pqrs/solicitud/crear/",
+                        "titulo": "Generar",
+                    },
+                    {
                         "path": "/pqrs/solicitud/ver/",
                         "method": "GET",
                         "icono": "icon",
@@ -210,18 +217,11 @@ resources = [
                         "titulo": "Ver",
                     },
                     {
-                        "path": "/pqrs/solicitud/crear/",
-                        "method": "POST",
-                        "icono": "icon",
-                        "link": "/pqrs/solicitud/crear/",
-                        "titulo": "Crear",
-                    },
-                    {
                         "path": "/pqrs/solicitud/editar/",
                         "method": "PUT",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/editar/",
-                        "titulo": "Editar",
+                        "titulo": "Actualizar",
                     },
                     {
                         "path": "/pqrs/solicitud/eliminar/",
@@ -244,7 +244,7 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/pqrs/tipo/",
-                "titulo": "Tipo de solicitud",
+                "titulo": "Tipo de Solicitud",
                 "items": [
                     {
                         "path": "/pqrs/tipo/gestionar/",
@@ -260,7 +260,7 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/pqrs/asignacion/",
-                "titulo": "Asignacion",
+                "titulo": "Asignación",
                 "items": [
                     {
                         "path": "/pqrs/asignacion/mis-solicitudes",
@@ -405,25 +405,33 @@ resources = [
                 "titulo": "Actividades",
                 "items": [
                     {
-                        "path": "/eventos/actividades/ver/",
-                        "method": "GET",
-                        "icono": "icon",
-                        "link": "/eventos/actividades/ver/",
-                        "titulo": "Ver",
-                    },
-                    {
                         "path": "/eventos/actividades/crear/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/eventos/actividades/crear/",
-                        "titulo": "Crear",
+                        "titulo": "Solicitar",
                     },
+                    {
+                        "path": "/eventos/actividades/aprobacion/",
+                        "method": "GET",
+                        "icono": "icon",
+                        "link": "/eventos/actividades/aprobacion/",
+                        "titulo": "Aprobación",
+                    },
+                    {
+                        "path": "/eventos/actividades/ver/",
+                        "method": "GET",
+                        "icono": "icon",
+                        "link": "/eventos/actividades/ver/",
+                        "titulo": "Reportes",
+                    },
+            
                     {
                         "path": "/eventos/actividades/editar/",
                         "method": "PUT",
                         "icono": "icon",
                         "link": "/eventos/actividades/editar/",
-                        "titulo": "Editar",
+                        "titulo": "Actualizar",
                     },
                     {
                         "path": "/eventos/actividades/eliminar/",

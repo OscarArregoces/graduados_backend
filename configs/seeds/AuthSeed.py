@@ -6,6 +6,7 @@ GestoresSeed = [
     {"name": "FCSYH"},
     {"name": "FIUG"},
     {"name": "FCBYA Y DEPENDENCIAS"},
+    {"name": "GENERAL"},
 ]
 
 CondicionesSeed = [
@@ -39,6 +40,9 @@ PersonsSeed = [
         "email2": "",
         "document_type_id": 1,
         "gender_type_id": 1,
+        "graduado": False,
+        "funcionario": True,
+        "date_of_birth": "1999-08-28",
     },
     {
         "fullname": "Usuario Administrador de Graduados",
@@ -49,21 +53,9 @@ PersonsSeed = [
         "gender_type_id": 1,
         "email": "graduados@uniguajira.edu.co",
         "email2": "",
-    },
-]
-
-CarrerasSeed = [
-    {
-        "programa": "INGENIERÍA DE SISTEMAS",
-        "modalidad_grado": "INFORME DE INVESTIGACIÓN",
-        "proyecto_grado": "ANÁLISIS DEL NIVEL DE SATISFACCIÓN DE LOS ESTUDIANTES DE LA UNAD Y EL SENA, FRENTE AL USO DE AMBIENTES VIRTUALES DE APRENDIZAJE (AVA), EN EL MUNICIPIO DE RIOHACHA.",
-        "periodo_grado": "2023 II",
-        "numero_acta": "24313",
-        # "fecha_grado": "2023/12/11",
-        "numero_folio": "182",
-        "sede": "RIOHACHA",
-        "direccion_intitucional": "KM 5 VIA MAICAO",
-        "person_id": 1,
+        "graduado": False,
+        "funcionario": True,
+        "date_of_birth": "1999-08-28",
     },
 ]
 
@@ -83,8 +75,9 @@ UsersSeed = [
 
 GroupsSeed = [
     {"name": "Admin"},
-    {"name": "Graduado"},
     {"name": "General"},
+    {"name": "Graduado"},
+    {"name": "Funcionario General"},
 ]
 
 GendersSeed = [

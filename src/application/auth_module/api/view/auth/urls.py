@@ -1,11 +1,11 @@
 from django.urls import path
 
-from .view import AuthLogin, AuthRegister, LogoutView
+from .view import AuthLoginFuncionario, AuthLoginGraduado, LogoutView
 
 app_name = "module"
 
 urlpatterns = [
-    path("login/", AuthLogin.as_view()),
-    path("register/", AuthRegister.as_view()),
+    path("login/", AuthLoginFuncionario.as_view()),
+    path("login/graduado", AuthLoginGraduado.as_view()),
     path("logout/", LogoutView.as_view()),
 ]
