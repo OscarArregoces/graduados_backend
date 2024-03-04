@@ -43,22 +43,21 @@ class Gestor(BaseModel):
         verbose_name_plural = "Gestores"
 
 class Persons(BaseModel):
-    fullname = models.CharField(max_length=150, unique=False, blank=True, default="")
+    fullname = models.CharField(max_length=150, blank=False, default="")
     identification = models.CharField(max_length=40, unique=True, blank=False, default="")
     address = models.CharField(max_length=150, blank=True, default="")
     nationality = models.CharField(max_length=100, blank=True, default="")
     date_of_birth = models.DateField(blank=True, null=True)
-    phone = models.CharField(max_length=50, blank=True, default="")
-    phone2 = models.CharField(blank=True, default="",  max_length=50)
+    phone = models.CharField(max_length=50, blank=False, default="")
+    phone2 = models.CharField(max_length=50, blank=True, default="")
     fecha_expedicion = models.DateField(blank=True, null=True)
-    condicion_vulnerable = models.CharField(blank=True, default="", max_length=300)
-    municipio = models.CharField(blank=True, default="", max_length=100)
-    departamento = models.CharField(blank=True, default="", max_length=100)
-    email = models.EmailField(_("email address"), blank=False, default="", unique=False)
-    email2 = models.EmailField(_("email address"), blank=True, unique=False)
+    condicion_vulnerable = models.CharField(max_length=300, blank=True, default="")
+    municipio = models.CharField(max_length=100, blank=True, default="")
+    departamento = models.CharField(max_length=100, blank=True, default="")
+    email = models.EmailField(_("email address"), blank=False, default="")
+    email2 = models.EmailField(_("email address"), blank=True, default="")
     graduado = models.BooleanField(blank=True, default=True)
     funcionario = models.BooleanField(blank=True, default=False)
-    
     status = models.BooleanField(default=True)
 
     document_type = models.ForeignKey(
@@ -76,10 +75,10 @@ class Persons(BaseModel):
     )
 
     def __str__(self) -> str:
-        return self.name  # type: ignore
+        return self.fullname  # type: ignore
 
     class Meta:
-        unique_together = ("name", "identification")
+        unique_together = ("fullname", "identification")
         verbose_name = "Persons"
         verbose_name_plural = "Persons"
 

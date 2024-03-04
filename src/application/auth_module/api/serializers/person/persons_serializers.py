@@ -32,7 +32,8 @@ class PersonsSerializers(Serializer):
         model = Persons
         exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
     
-    def create(self, validated_data):
+    def create(self, validated_data,):
+        # validated_data.get('userId',None)
         document_type_id = validated_data.pop('document_type', None)
         gender_type_id = validated_data.pop('gender_type', None)
 
@@ -52,35 +53,7 @@ class PersonsSerializers(Serializer):
 class PersonsCreateSerializer(ModelSerializer):
     class Meta:
         model = Persons
-        fields = (
-            'id', 'fullname', 'identification', 'address', 'nationality',
-            'date_of_birth', 'phone', 'phone2', 'fecha_expedicion',
-            'condicion_vulnerable', 'municipio', 'departamento',
-            'email', 'email2', 'graduado', 'funcionario', 'status',
-            'document_type', 'gender_type'
-        )
-        extra_kwargs = {
-            'fullname': {'required': True},
-            'identification': {'required': True},
-            'email': {'required': True},
-            'phone': {'required': True},
-        }
-
-    def validate_date_of_birth(self, value):
-        # Si la fecha de nacimiento es una cadena vacía, establecerla como None
-        if value == "":
-            return None
-        return value
-
-    def validate_fecha_expedicion(self, value):
-        # Si la fecha de expedición es una cadena vacía, establecerla como None
-        if value == "":
-            return None
-        return value
-
-    def create(self, validated_data):
-        # Puedes personalizar la lógica de creación aquí si es necesario
-        return Persons.objects.create(**validated_data)
+        fields = '__all__'
 
 class PersonsDetailSerializers(ModelSerializer):
      class Meta:

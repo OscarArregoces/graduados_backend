@@ -124,21 +124,34 @@ class UserChangePasswordView(UpdateAPIView):
         except (AttributeError, Exception) as e:
             return Response(e.args, status.HTTP_400_BAD_REQUEST)
          
+# class GraduadosView(APIView):
+#     @DecoratorPaginateView
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
+#             serializer = PersonsSimpleSerializersView(personas, many=True)
+#             return serializer.data
+#         except Exception as e :
+#            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class GraduadosView(APIView):
     @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         try:
-            personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
-            serializer = PersonsSimpleSerializersView(personas, many=True)
-            return serializer.data
+            graduado_id = kwargs.get("graduado_id",None)
+            print(kwargs)
+            if graduado_id: 
+                # graduado = get_object_or_404(Persons, identification=graduado_id, graduado=True)
+                graduado = Persons.objects.filter(graduado=True,identification=graduado_id).exclude(id__in=[1, 2])
+                serializer = PersonsSimpleSerializersView(graduado, many=True)
+                return serializer.data
+            else :
+                personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
+                serializer = PersonsSimpleSerializersView(personas, many=True)
+                return serializer.data
         except Exception as e :
            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class GraduadoView(APIView):
-    def get(self, request, graduado_id, *args, **kwargs):
-        graduado = get_object_or_404(Persons, identification=graduado_id, graduado=True)
-        serializer = PersonsSimpleSerializersView(graduado)
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
 class GraduadoDetailView(APIView):
     def get(self, request, graduado_id, *args, **kwargs):
@@ -160,9 +173,15 @@ class FuncionariosView(APIView):
     @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         try:
-            personas = Persons.objects.filter(funcionario=True).exclude(id__in=[1, 2]).all()
-            serializer = PersonsSimpleSerializersView(personas, many=True)
-            return serializer.data
+            funcionario_id = kwargs.get("funcionario_id",None)
+            if funcionario_id:
+                funcionarios = Persons.objects.filter(funcionario=True,identification=funcionario_id).exclude(id__in=[1, 2])
+                serializer = PersonsSimpleSerializersView(funcionarios, many=True)
+                return serializer.data
+            else :
+                funcionarios = Persons.objects.filter(funcionario=True).exclude(id__in=[1, 2])
+                serializer = PersonsSimpleSerializersView(funcionarios, many=True)
+                return serializer.data
         except Exception as e :
            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
        
@@ -171,6 +190,7 @@ class FuncionariosView(APIView):
         persons_serializer = PersonsCreateSerializer(data=request.data)
         if persons_serializer.is_valid():
             persona = persons_serializer.save()
+            # persona = persons_serializer.save(userId = request.user.id)
             identification = request.data['identification']
             usuario_data = {
                 'username': str(identification),
@@ -184,9 +204,8 @@ class FuncionariosView(APIView):
         else:
             return Response({'error': persons_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-class FuncionarioView(APIView):
+class FuncionarioRolesView(APIView):
     def get(self, request, funcionario_id, *args, **kwargs):
-        # funcionario = get_object_or_404(Persons, identification=funcionario_id, funcionario=True)
         funcionario = Persons.objects.filter(
             identification=funcionario_id,
             funcionario=True
