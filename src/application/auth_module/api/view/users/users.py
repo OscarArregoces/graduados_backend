@@ -7,7 +7,7 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework import status
 from configs.helpers.PaginationView import DecoratorPaginateView
 from configs.helpers.formatDate import formatDate
-from configs.helpers.excelTools import formateDocumentType, formateGenderType, formateNationaliy
+from configs.helpers.excelTools import formateCondicionVulnerable, formateDepartamento, formateDocumentType, formateGenderType, formateMunicipio, formateNationaliy
 from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
 
 from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSerializers, PersonsSimpleSerializersView
@@ -256,26 +256,29 @@ class CargarUsuariosExcel(APIView):
                         
                     except Persons.DoesNotExist:
 
-                        gender_type_id = formateGenderType(row['GENERO'])
-                        document_type_id = formateDocumentType(row['TIPO_IDENTIFICACION'])
+                        gender_type = formateGenderType(row['GENERO'])
+                        document_type = formateDocumentType(row['TIPO_IDENTIFICACION'])
+                        condicion_vulnerable = formateCondicionVulnerable(row['CONDICION VULNERABLE'])
                         nationality = formateNationaliy(row['PAIS DE NACIMIENTO'])
+                        departamento = formateDepartamento(row['CIUDAD(DPTO)'])
+                        ciudad = formateMunicipio(row['CIUDAD(DPTO)'])
 
                         person_data = {
                             'fullname': row['NOMBRE'] if pd.notna(row['NOMBRE']) else "",
                             'identification': row['NUM_DOCUMENTO'] if pd.notna(row['NUM_DOCUMENTO']) else "",
                             'address': row['DIRECCION'] if pd.notna(row['DIRECCION']) else "",
-                            'nationality': nationality,
+                            'nationality_id': nationality,
+                            'departamento_id': departamento,
+                            'municipio_id': ciudad,
                             'phone': row['CELULAR'] if pd.notna(row['CELULAR']) else "",
                             'phone2': row['CELULAR 2'] if pd.notna(row['CELULAR 2']) else "",
                             'fecha_expedicion': formatDate(row['FECHA_EXPEDICION']), 
                             'date_of_birth': formatDate(row['FECHA_NACIMIENTO']), 
-                            'condicion_vulnerable': row['CONDICION VULNERABLE'] if pd.notna(row['CONDICION VULNERABLE']) else "",
-                            'municipio': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
-                            'departamento': row['CIUDAD(DPTO)'] if pd.notna(row['CIUDAD(DPTO)']) else "",
+                            'condicion_vulnerable_id': condicion_vulnerable,
                             'email': row['CORREO'] if pd.notna(row['CORREO']) else "",
                             'email2': row['CORREO 2'] if pd.notna(row['CORREO 2']) else "",
-                            'document_type_id': document_type_id,
-                            'gender_type_id': gender_type_id,
+                            'document_type_id': document_type,
+                            'gender_type_id': gender_type,
                         }
                         
                         persons_instance = Persons.objects.create(**person_data)

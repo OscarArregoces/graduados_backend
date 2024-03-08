@@ -14,6 +14,7 @@ router.register("", viewset=PersonViewSet, basename="person")
 urlpatterns = [
     path("", include(router.urls)),
     path("perfil", CarreraView.as_view()),
+    path("actualizar-datos/<int:persona_id>/", CarreraView.as_view()),
     
 ]
 

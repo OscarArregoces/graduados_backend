@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from configs.seeds.EventosSeed import AreasActividadSeed, SubareasActividadSeed, TipoActividadSeed
 from configs.seeds.AuthSeed import CondicionesSeed, DocumentTypeSeed, GendersSeed, GestoresSeed, GroupsSeed, PersonsSeed, UsersSeed
 from configs.seeds.ClasificadosSeed import CapacitacionesSeed, EmprendimientosSeed
+from configs.seeds.PaisesSeed import CiudadesSeed, DepartamentosSeed, PaisesSeed
 
 class Migration(migrations.Migration):
 
@@ -21,7 +22,21 @@ class Migration(migrations.Migration):
     
     def insert_init_data(apps, schema_editor):
         
-        CondicionesVulnerables = apps.get_model("auth_module", "CondicionesVulnerables") # type: ignore
+        Paises = apps.get_model("auth_module", "Pais") # type: ignore
+        Departamentos = apps.get_model("auth_module", "Departamento") # type: ignore
+        Ciudades = apps.get_model("auth_module", "Ciudad") # type: ignore
+        
+        Paises.objects.bulk_create(
+            [Paises(**data) for data in PaisesSeed]
+        )
+        Departamentos.objects.bulk_create(
+            [Departamentos(**data) for data in DepartamentosSeed]
+        )
+        Ciudades.objects.bulk_create(
+            [Ciudades(**data) for data in CiudadesSeed]
+        )
+        
+        CondicionesVulnerables = apps.get_model("auth_module", "CondicionVulnerable") # type: ignore
         CondicionesVulnerables.objects.bulk_create(
             [CondicionesVulnerables(**data) for data in CondicionesSeed]
         )
@@ -147,6 +162,13 @@ class Migration(migrations.Migration):
             Resources.objects.all().delete()
             Resources_roles = apps.get_model("auth_module", "Resources_roles") # type: ignore
             Resources_roles.objects.all().delete()
+            Paises = apps.get_model("auth_module", "Pais") # type: ignore
+            Paises.objects.all().delete()
+            Departamentos = apps.get_model("auth_module", "Departamento") # type: ignore
+            Departamentos.objects.all().delete()
+            Ciudades = apps.get_model("auth_module", "Ciudad") # type: ignore
+            Ciudades.objects.all().delete()
+        
 
     operations = [
         migrations.CreateModel(

@@ -10,13 +10,30 @@ GestoresSeed = [
 ]
 
 CondicionesSeed = [
-    {"name": "INDIGENA"},
-    {"name": "AFROCOLOMBIANO"},
-    {"name": "CONDICION DE DISCAPACIDAD"},
-    {"name": "COMUNIDAD LGBTI"},
-    {"name": "VICTIMA DE VIOLENCIA"},
-    {"name": "VIOLENCIA DE GENERO"},
+    {"name": "Indígena"},
+    {"name": "Victima de Violencia"},
+    {"name": "Afrodescendientes"},
+    {"name": "Condición de Discapacidad"},
+    {"name": "Comunidad LGBTI"},
+    {"name": "Violencia de Genero"},
+    {"name": "Desplazado"},
+    {"name": "Discapacitado"},
+    {"name": "Grupos Religiosos"},
+    {"name": "Ninguna"},
 ]
+# CondicionesSeed = [
+#     {"name": "Poblaciones étnicas"},
+#     {"name": "Población con necesidades educativas especiales"},
+#     {"name": "Población afectada por la violencia"},
+#     {"name": "Niños, niñas y jóvenes trabajadores"},
+#     {"name": "Adolescentes en conflicto con la ley penal"},
+#     {"name": "Niños, niñas y adolescentes en protección"},
+#     {"name": "Jóvenes y adultos iletrados"},
+#     {"name": "Habitantes de frontera"},
+#     {"name": "Población rural dispersa"},
+#     {"name": "Ninguna"},
+# ]
+
 DocumentTypeSeed = [
     {"name": "Cédula de Ciudadanía"},
     {"name": "Tarjeta de Identidad"},
@@ -35,7 +52,9 @@ PersonsSeed = [
         "fullname": "Usuario Administrador de Funcionarios",
         "identification": "1111111111",
         "address": "CARRERA 23 # 14 K 22",
-        "nationality": "Colombia",
+        "nationality_id": 49,
+        "departamento_id": 764,
+        "municipio_id": 685,
         "email": "funcionarios@uniguajira.edu.co",
         "email2": "",
         "document_type_id": 1,
@@ -48,7 +67,9 @@ PersonsSeed = [
         "fullname": "Usuario Administrador de Graduados",
         "identification": "2222222222",
         "address": "Cll 15# 21-89",
-        "nationality": "Colombia",
+        "nationality_id": 49,
+        "departamento_id": 764,
+        "municipio_id": 685,
         "document_type_id": 1,
         "gender_type_id": 1,
         "email": "graduados@uniguajira.edu.co",
@@ -81,7 +102,8 @@ GroupsSeed = [
 ]
 
 GendersSeed = [
-    {"name": "Masculino"},
-    {"name": "Femenino"},
+    {"name": "Hombre"},
+    {"name": "Mujer"},
     {"name": "Otro"},
 ]
+

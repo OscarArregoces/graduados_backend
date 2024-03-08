@@ -1,5 +1,11 @@
 from attr import fields
 from django.forms import BooleanField
+from src.application.auth_module.api.serializers.condiciones.codiciones_serializers import CondicionesVulnerablesSerializers
+from src.application.auth_module.api.serializers.gestor.gestor_serializer import GestorSerializer
+from src.application.auth_module.api.serializers.nationality.ciudad_serializer import CiuadadSerializer
+from src.application.auth_module.api.serializers.nationality.departamento_serializer import DepartamentoSerializer
+
+from src.application.auth_module.api.serializers.nationality.pais_serializer import PaisSerializer
 from ....models import Document_types, Genders, Persons
 from rest_framework.serializers import (
     ModelSerializer,
@@ -11,7 +17,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
 )
 from ..document.document_serializers import DocumentSerializersView
-from ..gender.gender_Serializers import GenderSerializersView
+from ..gender.gender_Serializers import GenderSerializers, GenderSerializersView
 from ..user.users_serializers import UserSerializersSimple
 from rest_framework.validators import UniqueValidator
 
@@ -26,14 +32,12 @@ class PersonsSerializers(Serializer):
     email2 = CharField(required=False, allow_blank=True)
     document_type = IntegerField(required=False)
     gender_type = IntegerField(required=False)
-    # user = UserSerializersSimple(read_only=True, expands=False)
 
     class Meta:
         model = Persons
         exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
     
     def create(self, validated_data,):
-        # validated_data.get('userId',None)
         document_type_id = validated_data.pop('document_type', None)
         gender_type_id = validated_data.pop('gender_type', None)
 
@@ -46,17 +50,20 @@ class PersonsSerializers(Serializer):
         
         return Persons.objects.create(**{**validated_data, 'email2':None,})
     
-    # def create(self, validated_data):
-    #     return Persons.objects.create(**validated_data)
-
-
 class PersonsCreateSerializer(ModelSerializer):
     class Meta:
         model = Persons
         fields = '__all__'
 
 class PersonsDetailSerializers(ModelSerializer):
-     class Meta:
+    nationality = PaisSerializer(read_only=True)
+    departamento = DepartamentoSerializer(read_only=True)
+    municipio = CiuadadSerializer(read_only=True)
+    document_type= DocumentSerializersView(read_only=True)
+    gender_type = GenderSerializersView(read_only=True)
+    condicion_vulnerable = CondicionesVulnerablesSerializers(read_only=True)
+    gestor = GestorSerializer(read_only=True)
+    class Meta:
         model = Persons
         exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
     
@@ -66,7 +73,7 @@ class PersonsSimpleSerializersView(ModelSerializer):
     
     class Meta:
         model = Persons
-        fields = ('id','fullname','email','nationality','identification','gender_type')
+        fields = ('id','fullname','email','nationality','identification','gender_type','phone', 'identification')
 
 
 
@@ -109,22 +116,4 @@ class UsuariosExcelSerializersView(Serializer):
     document_type = CharField()
     genero = CharField()
   
-# class FuncionarioSerializers(Serializer):
-#     fullname  = CharField()
-#     identification  = CharField()
-#     address  = CharField()
-#     nationality  = CharField()
-#     date_of_birth  = DateField()
-#     phone  = CharField()
-#     phone2  = CharField()
-#     fecha_expedicion  = DateField()
-#     condicion_vulnerable  = CharField()
-#     municipio  = CharField()
-#     departamento  = CharField()
-#     email  = CharField()
-#     email2  = CharField()
-#     graduado  = BooleanField()
-#     funcionario  = BooleanField()
-#     document_type = IntegerField()
-#     gender_type = IntegerField()
   

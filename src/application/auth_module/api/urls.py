@@ -15,4 +15,6 @@ urlpatterns = [
     path("security/", include(f"{PATH_APP}.auth_module.api.view.security.urls")),
     path("university/", include(f"{PATH_APP}.auth_module.api.view.university.urls")),
     path("condiciones/", include(f"{PATH_APP}.auth_module.api.view.condiciones.urls")),
+    path("nationality/", include(f"{PATH_APP}.auth_module.api.view.nationality.urls")),
+    path("gestor/", include(f"{PATH_APP}.auth_module.api.view.gestor.urls")),
 ]

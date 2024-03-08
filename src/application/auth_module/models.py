@@ -42,37 +42,61 @@ class Gestor(BaseModel):
         verbose_name = "Gestor"
         verbose_name_plural = "Gestores"
 
+class CondicionVulnerable(BaseModel):
+    name = models.CharField(max_length=256)
+
+    class Meta:
+        verbose_name = "CondicionVulnerable"
+        verbose_name_plural = "CondicionesVulnerables"
+        
+class Pais(BaseModel):
+    name = models.CharField(max_length=200)
+    sap = models.CharField(max_length=10)
+
+    class Meta:
+        verbose_name = "Pais"
+        verbose_name_plural = "Paises"
+        
+class Departamento(BaseModel):
+    name = models.CharField(max_length=200)
+    pais = models.ForeignKey(Pais, on_delete=models.SET_NULL, blank=True, null=True )
+
+    class Meta:
+        verbose_name = "Departamento"
+        verbose_name_plural = "Departamentos"
+        
+class Ciudad(BaseModel):
+    sap = models.CharField(max_length=10)
+    name = models.CharField(max_length=200)
+    departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL, blank=True, null=True )
+
+    class Meta:
+        verbose_name = "Ciudad"
+        verbose_name_plural = "Ciudades"
+
+
 class Persons(BaseModel):
     fullname = models.CharField(max_length=150, blank=False, default="")
     identification = models.CharField(max_length=40, unique=True, blank=False, default="")
     address = models.CharField(max_length=150, blank=True, default="")
-    nationality = models.CharField(max_length=100, blank=True, default="")
     date_of_birth = models.DateField(blank=True, null=True)
     phone = models.CharField(max_length=50, blank=False, default="")
     phone2 = models.CharField(max_length=50, blank=True, default="")
     fecha_expedicion = models.DateField(blank=True, null=True)
-    condicion_vulnerable = models.CharField(max_length=300, blank=True, default="")
-    municipio = models.CharField(max_length=100, blank=True, default="")
-    departamento = models.CharField(max_length=100, blank=True, default="")
     email = models.EmailField(_("email address"), blank=False, default="")
     email2 = models.EmailField(_("email address"), blank=True, default="")
     graduado = models.BooleanField(blank=True, default=True)
     funcionario = models.BooleanField(blank=True, default=False)
     status = models.BooleanField(default=True)
-
-    document_type = models.ForeignKey(
-        Document_types,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
-    gender_type = models.ForeignKey(
-        Genders,
-        related_name="gender_types",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
+    
+    document_type = models.ForeignKey(Document_types,on_delete=models.SET_NULL,blank=True,null=True)
+    gender_type = models.ForeignKey(Genders,related_name="gender_types",on_delete=models.SET_NULL,blank=True,null=True)
+    
+    nationality = models.ForeignKey(Pais,on_delete=models.SET_NULL,blank=True,null=True)
+    departamento = models.ForeignKey(Departamento,on_delete=models.SET_NULL,blank=True,null=True)
+    municipio = models.ForeignKey(Ciudad,on_delete=models.SET_NULL,blank=True,null=True)
+    condicion_vulnerable = models.ForeignKey(CondicionVulnerable,on_delete=models.SET_NULL,blank=True,null=True)
+    gestor = models.ForeignKey(Gestor,on_delete=models.SET_NULL,blank=True,null=True)
 
     def __str__(self) -> str:
         return self.fullname  # type: ignore
@@ -179,10 +203,3 @@ class Programs(BaseModel):
     class Meta:
         verbose_name = "Program"
         verbose_name_plural = "Programs"
-        
-class CondicionesVulnerables(BaseModel):
-    name = models.CharField(max_length=256)
-
-    class Meta:
-        verbose_name = "CondicionVulnerable"
-        verbose_name_plural = "CondicionesVulnerables"

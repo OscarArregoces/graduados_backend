@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from django.db import models
 from rest_framework.response import Response
-from ....models.models import Inscripcion, User, Asistencia, Eventos
+from ....models.models import User, Asistencia, Eventos
 from ...serializers.eventos.inscripciones import (
     InscripcionesSerializersView,
     InscripcionesSerializers,
