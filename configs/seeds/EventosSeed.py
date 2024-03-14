@@ -29,3 +29,20 @@ SubareasActividadSeed = [
     {"area_id": 3, "name": "Distinciones"},
     {"area_id": 4, "name": "Carnet"},
 ]
+
+ServiciosSeed= [
+    {"name": "Comunicaciones (Publicidad)"},
+    {"name": "Ori (Ponente)"},
+    {"name": "Bienestar Universitario"},
+    {"name": "Protocolo"},
+    {"name": "Recursos Fisicos"},
+    {"name": "Talento Humano"},
+  ];
+
+EventosStatusSeed= [
+    {"name": "Radicada"},
+    {"name": "Aprobada"},
+    {"name": "Rechazada"},
+    {"name": "Finalizada"},
+  ];
+  

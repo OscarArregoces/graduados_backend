@@ -1,3 +1,4 @@
+from pyexpat import model
 from rest_framework import serializers
 from ....models import SubAreaEventos
 from .eventos_cate_serializers import EventosCategorySerializersView
@@ -44,3 +45,11 @@ class EventosSubAreaSerializers(BaseSerializers):
         instance.visible = validated_data.get('visible', instance.visible)
         instance.save()
         return instance
+
+class SubAreaSimpleSerializer(serializers.Serializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
+    # area = serializers.IntegerField()
+    name = serializers.CharField()
+    # class Meta:
+    #     model: SubAreaEventos
+    #     fields = ("id","name")

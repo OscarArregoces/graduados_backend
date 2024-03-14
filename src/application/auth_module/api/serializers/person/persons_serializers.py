@@ -17,8 +17,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
 )
 from ..document.document_serializers import DocumentSerializersView
-from ..gender.gender_Serializers import GenderSerializers, GenderSerializersView
-from ..user.users_serializers import UserSerializersSimple
+from ..gender.gender_Serializers import GenderSerializersView
 from rest_framework.validators import UniqueValidator
 
 
@@ -69,6 +68,7 @@ class PersonsDetailSerializers(ModelSerializer):
     
 class PersonsSimpleSerializersView(ModelSerializer):
 
+    nationality = PaisSerializer(read_only=True)
     gender_type = GenderSerializersView(read_only=True)
     
     class Meta:
@@ -116,4 +116,12 @@ class UsuariosExcelSerializersView(Serializer):
     document_type = CharField()
     genero = CharField()
   
-  
+class PersonCreatedSerializer(Serializer):
+    fullname = CharField()
+    
+class PersonPonentesSerializers(Serializer):
+    fullname = CharField(read_only=True)
+    document = DocumentSerializersView(read_only=True)
+    email = EmailField(read_only=True)
+    phone = CharField(read_only=True)
+

@@ -3,8 +3,10 @@ from ....models import TipoEvento
 from src.application.default.base_serializer import BaseSerializers
 
 
-class TipoEventosSerializersView(BaseSerializers):
-    name = serializers.CharField(read_only=True)
+class TipoEventosSerializersView(serializers.ModelSerializer):
+    class Meta:
+        model = TipoEvento
+        fields = ("id","name")
 
 
 class TipoEventosSerializers(BaseSerializers):

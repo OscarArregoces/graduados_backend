@@ -1,3 +1,4 @@
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonCreatedSerializer, PersonPonentesSerializers, PersonsSimpleSerializersView
 from ..roles.roles_serializers import RolesSerializers
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
@@ -9,17 +10,6 @@ from django.db.transaction import atomic, rollback
 
 User = get_user_model()
 
-
-class PersonsSimpleSerializers(serializers.Serializer):
-    name = serializers.CharField(write_only=True)
-    document_type = serializers.IntegerField(write_only=True)
-    surname = serializers.CharField(write_only=True)
-    identification = serializers.CharField(write_only=True)
-    address = serializers.CharField(write_only=True)
-    nationality = serializers.CharField(write_only=True)
-    date_of_birth = serializers.DateField(write_only=True)
-    gender_type = serializers.CharField(write_only=True)
-    phone = serializers.CharField(write_only=True)
 
 
 class UserSerializersSimple(serializers.Serializer):
@@ -124,3 +114,10 @@ class UserChangePassword(serializers.Serializer):
         instance.password = validated_data.get("password", instance.password)
         instance.save()
         return instance
+
+
+class UserCreatedSerializer(serializers.Serializer):
+    person = PersonCreatedSerializer(read_only=True)
+    
+class UserPonentesSerializer(serializers.Serializer):
+    person = PersonPonentesSerializers(read_only=True)

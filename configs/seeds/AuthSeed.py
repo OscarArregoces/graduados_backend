@@ -21,18 +21,6 @@ CondicionesSeed = [
     {"name": "Grupos Religiosos"},
     {"name": "Ninguna"},
 ]
-# CondicionesSeed = [
-#     {"name": "Poblaciones étnicas"},
-#     {"name": "Población con necesidades educativas especiales"},
-#     {"name": "Población afectada por la violencia"},
-#     {"name": "Niños, niñas y jóvenes trabajadores"},
-#     {"name": "Adolescentes en conflicto con la ley penal"},
-#     {"name": "Niños, niñas y adolescentes en protección"},
-#     {"name": "Jóvenes y adultos iletrados"},
-#     {"name": "Habitantes de frontera"},
-#     {"name": "Población rural dispersa"},
-#     {"name": "Ninguna"},
-# ]
 
 DocumentTypeSeed = [
     {"name": "Cédula de Ciudadanía"},
@@ -78,6 +66,38 @@ PersonsSeed = [
         "funcionario": True,
         "date_of_birth": "1999-08-28",
     },
+    {
+        "fullname": "Diomedes Diaz de Jeus",
+        "identification": "3333333333",
+        "address": "Cll 15# 21-89",
+        "nationality_id": 49,
+        "departamento_id": 764,
+        "municipio_id": 685,
+        "document_type_id": 1,
+        "gender_type_id": 1,
+        "email": "diomedes@uniguajira.edu.co",
+        "email2": "",
+        "graduado": False,
+        "funcionario": True,
+        "date_of_birth": "1999-08-28",
+        "gestor_id": 1
+    },
+    {
+        "fullname": "Leonel Andres Messi",
+        "identification": "4444444444",
+        "address": "Cll 15# 21-89",
+        "nationality_id": 49,
+        "departamento_id": 764,
+        "municipio_id": 685,
+        "document_type_id": 1,
+        "gender_type_id": 1,
+        "email": "messi@uniguajira.edu.co",
+        "email2": "",
+        "graduado": False,
+        "funcionario": True,
+        "date_of_birth": "1999-08-28",
+        "gestor_id": 2
+    },
 ]
 
 UsersSeed = [
@@ -92,13 +112,23 @@ UsersSeed = [
         "password": make_password("12345"),
         "person_id": 2,
     },
+    {
+        "username": "3333333333",
+        "password": make_password("3333333333"),
+        "person_id": 3,
+    },
+    {
+        "username": "4444444444",
+        "password": make_password("4444444444"),
+        "person_id": 4,
+    },
 ]
 
 GroupsSeed = [
     {"name": "Admin"},
     {"name": "General"},
     {"name": "Graduado"},
-    {"name": "Funcionario General"},
+    {"name": "Funcionario"},
 ]
 
 GendersSeed = [

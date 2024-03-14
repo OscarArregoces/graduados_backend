@@ -8,7 +8,5 @@ urlpatterns = [
     path("areas/", include(f"{PATH_APP}.eventos.api.views.areas.urls")),
     path("sub/areas/", include(f"{PATH_APP}.eventos.api.views.subAreas.urls")),
     path("tipos/", include(f"{PATH_APP}.eventos.api.views.tipo_actividad.urls")),
-    re_path(
-        "inscripciones/", include(f"{PATH_APP}.eventos.api.views.incripciones.urls")
-    ),
+    path("servicios/", include(f"{PATH_APP}.eventos.api.views.servicios.urls")),
 ]

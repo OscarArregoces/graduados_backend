@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from configs.seeds.UniversidadSeed import SedesSeed
 import src.validators.index
-
 import re
-from configs.helpers.menu import resources as menu_resources, resources_graduados
+from configs.helpers.menu import resources as menu_resources, resources_graduados, resources_funcionario
 from configs.helpers.menu_resources import menuResources
 from django.contrib.auth.models import Group
-from configs.seeds.EventosSeed import AreasActividadSeed, SubareasActividadSeed, TipoActividadSeed
+from configs.seeds.EventosSeed import AreasActividadSeed, EventosStatusSeed, ServiciosSeed, SubareasActividadSeed, TipoActividadSeed
 from configs.seeds.AuthSeed import CondicionesSeed, DocumentTypeSeed, GendersSeed, GestoresSeed, GroupsSeed, PersonsSeed, UsersSeed
 from configs.seeds.ClasificadosSeed import CapacitacionesSeed, EmprendimientosSeed
 from configs.seeds.PaisesSeed import CiudadesSeed, DepartamentosSeed, PaisesSeed
@@ -35,6 +35,15 @@ class Migration(migrations.Migration):
         Ciudades.objects.bulk_create(
             [Ciudades(**data) for data in CiudadesSeed]
         )
+        
+        Sedes = apps.get_model("auth_module", "Headquarters") # type: ignore
+        # Facultades = apps.get_model("auth_module", "Faculties") # type: ignore
+        # Programas = apps.get_model("auth_module", "Programs") # type: ignore
+        
+        Sedes.objects.bulk_create(
+            [Sedes(**data) for data in SedesSeed]
+        )
+        
         
         CondicionesVulnerables = apps.get_model("auth_module", "CondicionVulnerable") # type: ignore
         CondicionesVulnerables.objects.bulk_create(
@@ -64,10 +73,13 @@ class Migration(migrations.Migration):
         
         AreaEvento = apps.get_model("eventos", "EventosArea") # type: ignore
         SubareaEvento = apps.get_model("eventos", "SubAreaEventos") # type: ignore
+        Servicios = apps.get_model("eventos", "Servicios") # type: ignore
+        EventosStatus = apps.get_model("eventos", "EventosStatus") # type: ignore
         
         AreaEvento.objects.bulk_create([AreaEvento(**data) for data in AreasActividadSeed])
-        
         SubareaEvento.objects.bulk_create([SubareaEvento(**data) for data in SubareasActividadSeed])
+        Servicios.objects.bulk_create([Servicios(**data) for data in ServiciosSeed])
+        EventosStatus.objects.bulk_create([EventosStatus(**data) for data in EventosStatusSeed])
         
         Gestor = apps.get_model("auth_module", "Gestor") # type: ignore
         Gestor.objects.bulk_create([Gestor(**data) for data in GestoresSeed])
@@ -102,6 +114,14 @@ class Migration(migrations.Migration):
                     list_user_roles.append(
                         User_roles(user_id=u.id, group_id=r.id), # type: ignore
                     )
+                elif u.username == "3333333333" and r.name == "Funcionario":
+                    list_user_roles.append(
+                        User_roles(user_id=u.id, group_id=r.id), # type: ignore
+                    )
+                elif u.username == "4444444444" and r.name == "Funcionario":
+                    list_user_roles.append(
+                        User_roles(user_id=u.id, group_id=r.id), # type: ignore
+                    )
 
         User_roles.objects.bulk_create(list_user_roles)
 
@@ -118,6 +138,10 @@ class Migration(migrations.Migration):
         for rol in roles:
             if rol.name == "Graduado":
                 for r in resources_graduados:
+                    resource_instance = Resources.objects.get(id=r["id"])
+                    list_resources_roles.append(Resources_roles(rolesId_id=rol.id, resourcesId=resource_instance))  # type: ignore
+            if rol.name == "Funcionario":
+                for r in resources_funcionario:
                     resource_instance = Resources.objects.get(id=r["id"])
                     list_resources_roles.append(Resources_roles(rolesId_id=rol.id, resourcesId=resource_instance))  # type: ignore
             if rol.name == "Admin":
@@ -168,6 +192,11 @@ class Migration(migrations.Migration):
             Departamentos.objects.all().delete()
             Ciudades = apps.get_model("auth_module", "Ciudad") # type: ignore
             Ciudades.objects.all().delete()
+            Sedes = apps.get_model("auth_module", "Headquarters") # type: ignore
+            Sedes.objects.all().delete()
+            EventosStatus = apps.get_model("eventos", "EventosStatus") # type: ignore
+            EventosStatus.objects.all().delete()
+            
         
 
     operations = [

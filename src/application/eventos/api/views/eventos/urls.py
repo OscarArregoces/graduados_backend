@@ -1,18 +1,13 @@
 from django.urls import path
-from .views import (
-    SaveEventosView,
-    EventosTe,
-)
-
 from django.conf.urls import include
 
-from src.application.eventos.api.views.eventos.router import Router
-from src.application.eventos.api.views.eventos.views import EventosViewSet
+from src.application.eventos.api.views.eventos.views import EventoDetailView, EventosAprobacionView, EventosReportesView, EventosView, InscripcionView, MisEventosView
 
-router = Router()
-router.register("", viewset=EventosViewSet, basename="eventos")
 urlpatterns = [
-    path("", include(router.urls)),
-    path("create/", SaveEventosView.as_view()),
-    path("template/", EventosTe.as_view()),
+    path("", EventosView.as_view()),
+    path("aprobacion/<int:actividad_id>/", EventosAprobacionView.as_view()),
+    path("reportes/", EventosReportesView.as_view()),
+    path("mis-actividades/", MisEventosView.as_view()),
+    path("detalle/<int:actividad_id>/", EventoDetailView.as_view()),
+    path("inscripcion/<int:actividad_id>/", InscripcionView.as_view()),
 ]

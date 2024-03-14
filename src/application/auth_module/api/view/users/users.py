@@ -1,8 +1,5 @@
-from ast import Return
 from django.contrib.auth.hashers import make_password
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView
 from rest_framework import status
 from configs.helpers.PaginationView import DecoratorPaginateView
@@ -10,7 +7,7 @@ from configs.helpers.formatDate import formatDate
 from configs.helpers.excelTools import formateCondicionVulnerable, formateDepartamento, formateDocumentType, formateGenderType, formateMunicipio, formateNationaliy
 from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
 
-from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSerializers, PersonsSimpleSerializersView
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSimpleSerializersView
 from src.application.auth_module.api.serializers.roles.roles_serializers import RolesSerializers
 from ...serializers.user.users_serializers import (
     UserSerializers,
@@ -136,7 +133,7 @@ class UserChangePasswordView(UpdateAPIView):
 
 
 class GraduadosView(APIView):
-    @DecoratorPaginateView
+    # @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         try:
             graduado_id = kwargs.get("graduado_id",None)
@@ -145,11 +142,13 @@ class GraduadosView(APIView):
                 # graduado = get_object_or_404(Persons, identification=graduado_id, graduado=True)
                 graduado = Persons.objects.filter(graduado=True,identification=graduado_id).exclude(id__in=[1, 2])
                 serializer = PersonsSimpleSerializersView(graduado, many=True)
-                return serializer.data
+                # return serializer.data
+                return Response(serializer.data, status=status.HTTP_200_OK)
             else :
                 personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
                 serializer = PersonsSimpleSerializersView(personas, many=True)
-                return serializer.data
+                # return serializer.data
+                return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e :
            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
