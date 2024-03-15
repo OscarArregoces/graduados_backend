@@ -1,5 +1,4 @@
 from attr import fields
-from django.forms import BooleanField
 from src.application.auth_module.api.serializers.condiciones.codiciones_serializers import CondicionesVulnerablesSerializers
 from src.application.auth_module.api.serializers.gestor.gestor_serializer import GestorSerializer
 from src.application.auth_module.api.serializers.nationality.ciudad_serializer import CiuadadSerializer
@@ -14,6 +13,7 @@ from rest_framework.serializers import (
     EmailField,
     DateField,
     IntegerField,
+    BooleanField,
     PrimaryKeyRelatedField,
 )
 from ..document.document_serializers import DocumentSerializersView
@@ -73,9 +73,14 @@ class PersonsSimpleSerializersView(ModelSerializer):
     
     class Meta:
         model = Persons
-        fields = ('id','fullname','email','nationality','identification','gender_type','phone', 'identification')
+        fields = ('id','fullname','email','nationality','identification','gender_type','phone')
 
-
+class UserEventoSerializer(ModelSerializer):
+    
+    class Meta:
+        model = Persons
+        fields = ('id','fullname','email','phone', 'graduado', 'funcionario')
+        read_only_fields = fields
 
 queryset = Persons.objects.all()
 
@@ -124,4 +129,11 @@ class PersonPonentesSerializers(Serializer):
     document = DocumentSerializersView(read_only=True)
     email = EmailField(read_only=True)
     phone = CharField(read_only=True)
+    
+class PersonAsistenciaSerializers(Serializer):
+    fullname = CharField(read_only=True)
+    email = EmailField(read_only=True)
+    phone = CharField(read_only=True)
+    graduado = BooleanField(read_only=True)
+    funcionario = BooleanField(read_only=True)
 

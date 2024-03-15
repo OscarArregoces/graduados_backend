@@ -5,28 +5,28 @@ resources = [
         "icono": "pi pi-home",
         "method": "GET",
         "link": "/inicio/",
-        "titulo": "Inicio",   #ID 1
+        "titulo": "Inicio",
         "items": [
             {
                 "path": "/inicio/datos-personales/",
                 "icono": "icon",
                 "link": "/inicio/datos-personales/",
                 "method": "GET",
-                "titulo": "Datos Personales",   #ID 2
+                "titulo": "Datos Personales",
                 "items": [
                     {
                         "path": "/inicio/datos-personales/actualizar-datos/",
                         "icono": "icon",
                         "method": "POST",
                         "link": "/inicio/datos-personales/actualizar-datos/",
-                        "titulo": "Actualizar Datos",   #ID 3
+                        "titulo": "Actualizar Datos",
                     },
                     {
                         "path": "/inicio/datos-personales/actualizar-datos/",
                         "icono": "icon",
                         "method": "POST",
                         "link": "/inicio/datos-personales/actualizar-datos/",
-                        "titulo": "Actualizar Datos",   #ID 3
+                        "titulo": "Actualizar Datos",
                     },
                 ],
             },
@@ -38,35 +38,35 @@ resources = [
         "id_padre": 0,
         "icono": "pi pi-th-large",
         "link": "/admin/",
-        "titulo": "Administrador",   #ID 4
+        "titulo": "Administrador",
         "items": [
             {
                 "path": "/admin/roles/",
                 "method": "GET",
                 "icono": "pi pi-th-large",
                 "link": "/admin/roles/",
-                "titulo": "Roles",    #ID 5
+                "titulo": "Roles",
                 "items": [
                     {
                         "path": "/admin/roles/usuarios/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/roles/usuarios/",
-                        "titulo": "Administrativos",    #ID 6
+                        "titulo": "Administrativos",
                     },
                     {
                         "path": "/admin/roles/permisos/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/admin/roles/permisos/",
-                        "titulo": "Permisos",    #ID 7
+                        "titulo": "Permisos",
                     },
                     {
                         "path": "/admin/roles/recursos/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/admin/roles/recursos/",
-                        "titulo": "Recursos",    #ID 8
+                        "titulo": "Recursos",
                     },
                 ],
             },
@@ -75,14 +75,14 @@ resources = [
                 "method": "GET",
                 "icono": "pi pi-user-minus",
                 "link": "/admin/usuarios/",
-                "titulo": "Graduados",    #ID 9
+                "titulo": "Graduados",
                 "items": [
                     {
                         "path": "/admin/usuarios/gestionar/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/usuarios/gestionar/",
-                        "titulo": "Gestionar",    #ID 10
+                        "titulo": "Gestionar",
                     }
                 ],
             },
@@ -91,14 +91,14 @@ resources = [
                 "method": "GET",
                 "icono": "pi pi-user-minus",
                 "link": "/admin/genero/",
-                "titulo": "Generos",    #ID 11
+                "titulo": "Generos", 
                 "items": [
                     {
                         "path": "/admin/gemero/gestionar/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/genero/gestionar/",
-                        "titulo": "Gestionar",    #ID 12
+                        "titulo": "Gestionar", 
                     }
                 ],
             },
@@ -107,14 +107,14 @@ resources = [
                 "method": "GET",
                 "icono": "pi pi-user-minus",
                 "link": "/admin/tipo-identificacion/",
-                "titulo": "T. Identificacion",    #ID 13
+                "titulo": "T. Identificacion", 
                 "items": [
                     {
                         "path": "/admin/tipo-identificacion/gestionar/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/tipo-identificacion/gestionar/",
-                        "titulo": "Gestionar",    #ID 14
+                        "titulo": "Gestionar", 
                     }
                 ],
             },
@@ -123,14 +123,14 @@ resources = [
                 "method": "GET",
                 "icono": "pi pi-user-minus",
                 "link": "/admin/reportes/",
-                "titulo": "Reportes",    #ID 15
+                "titulo": "Reportes",  
                 "items": [
                     {
                         "path": "/admin/reportes/ver/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/admin/reportes/ver/",
-                        "titulo": "Gestionar",    #ID 16
+                        "titulo": "Gestionar", 
                     }
                 ],
             },
@@ -142,21 +142,21 @@ resources = [
         "method": "GET",
         "icono": "pi pi-book",
         "link": "/encuestas/",
-        "titulo": "Encuestas",   #ID 17
+        "titulo": "Encuestas", 
         "items": [
             {
                 "path": "/encuestas/preguntas/",
                 "method": "GET",
                 "icono": "icon",
                 "link": "/encuestas/preguntas/",
-                "titulo": "Preguntas",   #ID 18
+                "titulo": "Preguntas", 
                 "items": [
                     {
                         "path": "/encuestas/preguntas/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/encuestas/preguntas/gestionar/",
-                        "titulo": "Gestionar",   #ID 19
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -165,14 +165,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/encuestas/momentos/",
-                "titulo": "Momentos",   #ID 20
+                "titulo": "Momentos", 
                 "items": [
                     {
                         "path": "/encuestas/momentos/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/encuestas/momentos/gestionar/",
-                        "titulo": "Gestionar",   #ID 21
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -181,14 +181,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/encuestas/mis-encuestas/",
-                "titulo": "Encuestas",   #ID 22
+                "titulo": "Encuestas", 
                 "items": [
                     {
                         "path": "/encuestas/mis-encuestas/llenar-encuestas/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/encuestas/mis-encuestas/llenar-encuestas/",
-                        "titulo": "Mis Encuestas",   #ID 23
+                        "titulo": "Mis Encuestas",  
                     }
                 ],
             },
@@ -200,49 +200,49 @@ resources = [
         "method": "GET",
         "icono": "pi pi-folder",
         "link": "/pqrs/",
-        "titulo": "PQRS",   #ID 24
+        "titulo": "PQRS", 
         "items": [
             {
                 "path": "/pqrs/solicitud/",
                 "method": "GET",
                 "icono": "icon",
                 "link": "/pqrs/solicitud/",
-                "titulo": "Solicitud",   #ID 25
+                "titulo": "Solicitud",  
                 "items": [
                     {
                         "path": "/pqrs/solicitud/crear/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/crear/",
-                        "titulo": "Generar",    #ID 26
+                        "titulo": "Generar",   
                     },
                     {
                         "path": "/pqrs/solicitud/ver/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/ver/",
-                        "titulo": "Ver",    #ID 27
+                        "titulo": "Ver",   
                     },
                     {
                         "path": "/pqrs/solicitud/editar/",
                         "method": "PUT",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/editar/",
-                        "titulo": "Actualizar",    #ID 28
+                        "titulo": "Actualizar",   
                     },
                     {
                         "path": "/pqrs/solicitud/eliminar/",
                         "method": "DELETE",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/eliminar/",
-                        "titulo": "Eliminar",    #ID 29
+                        "titulo": "Eliminar",   
                     },
                     {
                         "path": "/pqrs/solicitud/mis-solicitudes/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/pqrs/solicitud/mis-solicitudes/",
-                        "titulo": "Mis Solicitudes",    #ID 30
+                        "titulo": "Mis Solicitudes",  
                     },
                 ],
             },
@@ -251,14 +251,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/pqrs/tipo/",
-                "titulo": "Tipo de Solicitud",   #ID 31
+                "titulo": "Tipo de Solicitud",   
                 "items": [
                     {
                         "path": "/pqrs/tipo/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/pqrs/tipo/gestionar/",
-                        "titulo": "Gestionar",   #ID 32
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -267,21 +267,21 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/pqrs/asignacion/",
-                "titulo": "Asignación",   #ID 33
+                "titulo": "Asignación",  
                 "items": [
                     {
                         "path": "/pqrs/asignacion/mis-solicitudes",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/pqrs/asignacion/mis-solicitudes",
-                        "titulo": "Mis Solicitudes",    #ID 34
+                        "titulo": "Mis Solicitudes",   
                     },
                     {
                         "path": "/pqrs/asignacion/solicitudes",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/pqrs/asignacion/solicitudes",
-                        "titulo": "Solicitudes",    #ID 35
+                        "titulo": "Solicitudes", 
                     },
                 ],
             },
@@ -293,56 +293,56 @@ resources = [
         "method": "GET",
         "icono": "pi pi-briefcase",
         "link": "/clasificados/",
-        "titulo": "Clasificados",   #ID 36
+        "titulo": "Clasificados", 
         "items": [
             {
                 "path": "/clasificados/emprendimientos/",
                 "method": "GET",
                 "icono": "icon",
                 "link": "/clasificados/emprendimientos/",
-                "titulo": "Emprendimientos",    #ID 37
+                "titulo": "Emprendimientos",   
                 "items": [
                     {
                         "path": "/clasificados/emprendimientos/crear/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/crear/",
-                        "titulo": "Crear",    #ID 38
+                        "titulo": "Crear",   
                     },
                     {
                         "path": "/clasificados/emprendimientos/ver/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/ver/",
-                        "titulo": "Ver",    #ID 39
+                        "titulo": "Ver",   
                     },
                     {
                         "path": "/clasificados/emprendimientos/editar/",
                         "method": "PUT",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/editar/",
-                        "titulo": "Editar",    #ID 40
+                        "titulo": "Editar",  
                     },
                     {
                         "path": "/clasificados/emprendimientos/eliminar/",
                         "method": "DELETE",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/eliminar/",
-                        "titulo": "Eliminar",    #ID 41
+                        "titulo": "Eliminar",  
                     },
                     {
                         "path": "/clasificados/emprendimientos/mis-emprendimientos/",
                         "method": "DELETE",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/mis-emprendimientos/",
-                        "titulo": "Mis Emprendimientos",    #ID 42
+                        "titulo": "Mis Emprendimientos",  
                     },
                     {
                         "path": "/clasificados/emprendimientos/detalles/",
                         "method": "DELETE",
                         "icono": "icon",
                         "link": "/clasificados/emprendimientos/detalles/",
-                        "titulo": "Detalles",    #ID 43
+                        "titulo": "Detalles",   
                     },
                 ],
             },
@@ -351,14 +351,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/clasificados/categoria/",
-                "titulo": "Categorias",    #ID 44
+                "titulo": "Categorias",   
                 "items": [
                     {
                         "path": "/clasificados/categoria/gestionar",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/clasificados/categoria/gestionar",
-                        "titulo": "Gestionar",    #ID 45
+                        "titulo": "Gestionar", 
                     }
                 ],
             },
@@ -367,14 +367,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/clasificados/sub-categoria/",
-                "titulo": "Subcategorias",    #ID 46
+                "titulo": "Subcategorias", 
                 "items": [
                     {
                         "path": "/clasificados/sub-categoria/gestionar",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/clasificados/sub-categoria/gestionar",
-                        "titulo": "Gestionar",    #ID 47
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -383,14 +383,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/clasificados/capacitaciones/",
-                "titulo": "Capacitaciones",    #ID 48
+                "titulo": "Capacitaciones",  
                 "items": [
                     {
                         "path": "/clasificados/capacitaciones/gestionar",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/clasificados/capacitaciones/gestionar",
-                        "titulo": "Gestionar",    #ID 49
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -402,35 +402,35 @@ resources = [
         "method": "GET",
         "icono": "pi pi-ticket",
         "link": "/eventos/",
-        "titulo": "Eventos",    #ID 50
+        "titulo": "Eventos",  
         "items": [
             {
                 "path": "/eventos/actividades/",
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/actividades/",
-                "titulo": "Actividades",    #ID 51
+                "titulo": "Actividades",  
                 "items": [
                     {
                         "path": "/eventos/actividades/crear/",
                         "method": "POST",
                         "icono": "icon",
                         "link": "/eventos/actividades/crear/",
-                        "titulo": "Solicitar",    #ID 52
+                        "titulo": "Solicitar",   
                     },
                     {
                         "path": "/eventos/actividades/aprobacion/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/actividades/aprobacion/",
-                        "titulo": "Aprobación",    #ID 53
+                        "titulo": "Aprobación",  
                     },
                     {
                         "path": "/eventos/actividades/ver/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/actividades/ver/",
-                        "titulo": "Reportes",    #ID 54
+                        "titulo": "Reportes", 
                     },
             
                     {
@@ -438,28 +438,28 @@ resources = [
                         "method": "PUT",
                         "icono": "icon",
                         "link": "/eventos/actividades/editar/",
-                        "titulo": "Actualizar",    #ID 55
+                        "titulo": "Actualizar", 
                     },
                     {
                         "path": "/eventos/actividades/eliminar/",
                         "method": "DELETE",
                         "icono": "icon",
                         "link": "/eventos/actividades/eliminar/",
-                        "titulo": "Eliminar",    #ID 56
+                        "titulo": "Eliminar",  
                     },
                     {
                         "path": "/eventos/actividades/mis-actividades/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/actividades/mis-actividades/",
-                        "titulo": "Mis Actividades",    #ID 57
+                        "titulo": "Mis Actividades",  
                     },
                     {
                         "path": "/eventos/actividades/asistencias/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/actividades/asistencias/",
-                        "titulo": "Asistencias",    #ID 58
+                        "titulo": "Asistencias",   
                     },
                 ],
             },
@@ -468,14 +468,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/areas/",
-                "titulo": "Areas",    #ID 59
+                "titulo": "Areas",   
                 "items": [
                     {
                         "path": "/eventos/areas/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/areas/gestionar/",
-                        "titulo": "Gestionar",    #ID 60
+                        "titulo": "Gestionar",   
                     }
                 ],
             },
@@ -484,14 +484,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/subareas/",
-                "titulo": "Subareas",    #ID 61
+                "titulo": "Subareas",   
                 "items": [
                     {
                         "path": "/eventos/subareas/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/subareas/gestionar/",
-                        "titulo": "Gestionar",    #ID 62
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -500,14 +500,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/tipo-actividad/",
-                "titulo": "Tipo Actividad",    #ID 63
+                "titulo": "Tipo Actividad",
                 "items": [
                     {
                         "path": "/eventos/tipo-actividad/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/tipo-actividad/gestionar/",
-                        "titulo": "Gestionar",    #ID 64
+                        "titulo": "Gestionar", 
                     }
                 ],
             },
@@ -516,14 +516,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/programa/",
-                "titulo": "Programas",    #ID 65
+                "titulo": "Programas", 
                 "items": [
                     {
                         "path": "/eventos/programa/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/programa/gestionar/",
-                        "titulo": "Gestionar",    #ID 66
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -532,14 +532,14 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/sede/",
-                "titulo": "Sedes",    #ID 67
+                "titulo": "Sedes",   
                 "items": [
                     {
                         "path": "/eventos/sede/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/sede/gestionar/",
-                        "titulo": "Gestionar",    #ID 68
+                        "titulo": "Gestionar",  
                     }
                 ],
             },
@@ -548,40 +548,17 @@ resources = [
                 "method": "GET",
                 "icono": "icon",
                 "link": "/eventos/facultad/",
-                "titulo": "Facultades",    #ID 69
+                "titulo": "Facultades",   
                 "items": [
                     {
                         "path": "/eventos/facultad/gestionar/",
                         "method": "GET",
                         "icono": "icon",
                         "link": "/eventos/facultad/gestionar/",
-                        "titulo": "Gestionar",    #ID 70
+                        "titulo": "Gestionar",   
                     }
                 ],
             },
-            # {
-            #     "path": "/eventos/asistencias/",
-            #     "method": "GET",
-            #     "icono": "icon",
-            #     "link": "/eventos/asistencias/",
-            #     "titulo": "Asistencias",
-            #     "items": [
-            #         {
-            #             "path": "/eventos/asistencias/ver-asistencias/",
-            #             "method": "GET",
-            #             "icono": "icon",
-            #             "link": "/eventos/asistencias/ver-asistencias/",
-            #             "titulo": "Ver Asistencias",
-            #         },
-            #         {
-            #             "path": "/eventos/asistencias/llenar-asistencias/",
-            #             "method": "GET",
-            #             "icono": "icon",
-            #             "link": "/eventos/asistencias/llenar-asistencias/",
-            #             "titulo": "LLenar Asistencias",
-            #         },
-            #     ],
-            # },
         ],
     },
 ]
@@ -630,5 +607,6 @@ resources_funcionario = [
     {"id":52},
     {"id":53},
     {"id":54},
+    {"id":55},
     {"id":58},
 ]

@@ -7,7 +7,7 @@ from configs.helpers.formatDate import formatDate
 from configs.helpers.excelTools import formateCondicionVulnerable, formateDepartamento, formateDocumentType, formateGenderType, formateMunicipio, formateNationaliy
 from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
 
-from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSimpleSerializersView
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSimpleSerializersView, UserEventoSerializer
 from src.application.auth_module.api.serializers.roles.roles_serializers import RolesSerializers
 from ...serializers.user.users_serializers import (
     UserSerializers,
@@ -167,7 +167,7 @@ class GraduadoDetailView(APIView):
             "persona": persona_serializer.data,
             "carreras": carrera_serializer.data
             }, status=status.HTTP_200_OK)
-        
+
 class FuncionariosView(APIView):
     @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
@@ -199,7 +199,7 @@ class FuncionariosView(APIView):
             usuario_serializer = CreateUserSerializers(data=usuario_data)
             if usuario_serializer.is_valid():
                 usuario_serializer.save()
-                return Response({'message': 'Funcionario creadocorrectamente'}, status=status.HTTP_201_CREATED)
+                return Response({'message': 'Funcionario creado correctamente'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': persons_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -225,7 +225,26 @@ class FuncionarioRolesView(APIView):
             # Manejar el caso en el que el usuario no existe
             return Response({'error': 'El usuario asociado al funcionario no existe.'}, status=status.HTTP_404_NOT_FOUND)
         
-        
+class UserEventoView(APIView):
+    # @DecoratorPaginateView
+    def get(self, request, *args, **kwargs):
+        persona_id = kwargs.get("persona_id",None)
+        if persona_id is None:
+            return Response({"error": "persona_id es requerido"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            persona = Persons.objects.filter(identification=persona_id).exclude(id__in=[1, 2])
+            if not persona.exists():
+                return Response({"error": "Persona no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+            
+            # usuario = persona.user_set.first()
+
+                
+            serializer = UserEventoSerializer(persona, many=True)
+            return Response({"user": persona[0].user_set.all().first().id , "persona": serializer.data[0]}, status=status.HTTP_200_OK)
+ 
+        except Exception as e :
+           return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+       
 
 class CargarUsuariosExcel(APIView):
     @transaction.atomic       

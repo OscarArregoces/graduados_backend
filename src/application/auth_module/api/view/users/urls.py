@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .users import CargarUsuariosExcel, FuncionarioRolesView, FuncionariosView, GraduadoDetailView, GraduadosView, UserChangePasswordView
+from .users import CargarUsuariosExcel, FuncionarioRolesView, FuncionariosView, GraduadoDetailView, GraduadosView, UserChangePasswordView, UserEventoView
 
 from django.conf.urls import include
 
@@ -17,4 +17,5 @@ urlpatterns = [
     re_path("funcionarios/?(?P<funcionario_id>[0-9]+)?/$", FuncionariosView.as_view(), name="funcionarios"),
     path("funcionarios/roles/<int:funcionario_id>/", FuncionarioRolesView.as_view()),
     path("detail/<int:graduado_id>/", GraduadoDetailView.as_view(), name="user-detail"),
+    path("eventos/<int:persona_id>/", UserEventoView.as_view(), name="user-evento-detail"),
 ]

@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from src.application.auth_module.models import Gestor, Headquarters
 from src.application.default.models import BaseModel
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -43,8 +45,9 @@ class EventosServicios(BaseModel):
 
 class EventosStatus(BaseModel):
     name = models.CharField(max_length=100, blank=False, null=False)
-    
+
 class Eventos(BaseModel):
+    id = models.IntegerField(primary_key=True, editable=False)
     nombre_actividad = models.CharField(max_length=256)
     fecha_inicio = models.DateTimeField(blank=True, null=True)
     fecha_final = models.DateTimeField(blank=True, null=True)
@@ -64,7 +67,18 @@ class Eventos(BaseModel):
     class Meta:
         verbose_name = "Evento"
         verbose_name_plural = "Eventos"
+        get_latest_by = "id"
+        ordering = ["id"]
 
+@receiver(pre_save, sender=Eventos)
+def set_evento_id(sender, instance, **kwargs):
+    if not instance.id:
+        last_evento = Eventos.objects.order_by('-id').first()
+        if last_evento:
+            instance.id = last_evento.id + 25
+        else:
+            instance.id = 10525
+            
 class PonentesVinculacion (BaseModel):
     actividad = models.ForeignKey(Eventos, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -90,3 +104,14 @@ class Asistencia(BaseModel):
     
     class Meta:
         unique_together = ("actividad", "user")
+
+class AsistenciaExternos(BaseModel):
+    actividad = models.ForeignKey(Eventos, on_delete=models.CASCADE, db_index=True, unique=False)
+    fullname = models.CharField(max_length=150, blank=False, default="")
+    email = models.CharField(max_length=150, blank=False, default="")
+    phone = models.CharField(max_length=150, blank=False, default="")
+    document = models.CharField(max_length=150, blank=False, default="")
+    vinculacion = models.CharField(max_length=150, blank=False, default="")
+    
+    class Meta:
+        unique_together = ("actividad", "document")

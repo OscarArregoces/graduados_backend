@@ -1,4 +1,4 @@
-from src.application.auth_module.api.serializers.person.persons_serializers import PersonCreatedSerializer, PersonPonentesSerializers, PersonsSimpleSerializersView
+from src.application.auth_module.api.serializers.person.persons_serializers import PersonAsistenciaSerializers, PersonCreatedSerializer, PersonPonentesSerializers, PersonsSimpleSerializersView
 from ..roles.roles_serializers import RolesSerializers
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
@@ -121,3 +121,6 @@ class UserCreatedSerializer(serializers.Serializer):
     
 class UserPonentesSerializer(serializers.Serializer):
     person = PersonPonentesSerializers(read_only=True)
+    
+class UserAsistenciaSerializer(serializers.Serializer):
+    person = PersonAsistenciaSerializers(read_only=True)

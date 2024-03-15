@@ -8,6 +8,7 @@ from src.application.eventos.api.serializers.eventos.ponentes_serializer import 
 from src.application.eventos.models.models import Asistencia, Eventos, EventosServicios, EventosStatus, PonentesExternos, PonentesVinculacion
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+import json
 class EventosView(APIView):
     def get(self, request, *args, **kwargs):
         try:
@@ -33,12 +34,6 @@ class EventosView(APIView):
             with transaction.atomic(): 
                 actividad = actividad_serializer.save()
 
-                # # Relacionar servicios con la actividad
-                # servicios_ids = actividad_data.get('servicios', [])
-                # for servicio_id in servicios_ids:
-                #     EventosServicios.objects.create(actividad=actividad, servicio_id=servicio_id)
-
-                # Relacionar ponentes vinculados con la actividad
                 vinculacion_data = ponentes_data.get('vinculacion', [])
 
                 for vinculacion_item in vinculacion_data:
@@ -77,6 +72,9 @@ class EventoDetailView(APIView):
         
         try:
             evento = Eventos.objects.filter(id=actividad_id)
+            if not evento.exists():
+                return Response({'errors': 'Evento no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
             ponentes_vinculacion = PonentesVinculacion.objects.filter(actividad=actividad_id)
             ponentes_externos = PonentesExternos.objects.filter(actividad=actividad_id)
             
@@ -99,11 +97,17 @@ class EventoDetailView(APIView):
 class EventosAprobacionView(APIView):
     def put(self, request, *args, **kwargs):
         actividad_id = kwargs.get('actividad_id',None)
+        body_data = json.loads(request.body)
+        actividad_status = body_data.get('actividad_status', None)
+        # actividad_status = request.PUT.get('actividad_status',None)
         if actividad_id is None:
             return Response({'errors': 'actividad_id es requerido'}, status=status.HTTP_400_BAD_REQUEST)
         
+        if actividad_status is None:
+            return Response({'errors': 'actividad_status es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        
         actividad = get_object_or_404(Eventos, id=actividad_id)
-        status_actividad = get_object_or_404(EventosStatus, id=2)
+        status_actividad = get_object_or_404(EventosStatus, id=actividad_status)
         actividad.estado_actividad = status_actividad
         actividad.save()
 
@@ -133,6 +137,17 @@ class EventosReportesView(APIView):
 class MisEventosView(APIView):    
     def get(self, request, *args, **kwargs):
         try:
+            fecha_actual = timezone.now()
+            actividades_aprobadas = Eventos.objects.filter(
+                estado_actividad_id = 2,
+                fecha_final__lte = fecha_actual
+            )
+            estado_finalizada = EventosStatus.objects.get(id=4)
+
+            for actividad in actividades_aprobadas:
+                actividad.estado_actividad = estado_finalizada
+                actividad.save()
+
             actividades = Eventos.objects.filter(estado_actividad=2)
             responseData = []
             for actividad in actividades:
