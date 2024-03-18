@@ -133,7 +133,6 @@ class PersonPonentesSerializers(Serializer):
 class PersonAsistenciaSerializers(Serializer):
     fullname = CharField(read_only=True)
     email = EmailField(read_only=True)
-    phone = CharField(read_only=True)
     graduado = BooleanField(read_only=True)
     funcionario = BooleanField(read_only=True)
 

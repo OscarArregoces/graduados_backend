@@ -30,7 +30,7 @@ class AsistenciarReporteSerializer(serializers.ModelSerializer):
 class AsistenciaReporteExternosSerializer(serializers.ModelSerializer):
     class Meta: 
         model = AsistenciaExternos
-        fields = ("fullname" ,"email", "phone")
+        fields = ("fullname" ,"email", "vinculacion")
         read_only_fields = fields
 
 

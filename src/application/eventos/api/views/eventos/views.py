@@ -1,14 +1,15 @@
 from rest_framework.views import APIView   
 from rest_framework.response import Response
 from rest_framework import status
-from src.application.eventos.api.serializers.eventos.Asistencias_serializers import AsistenciaSerializer
+from src.application.eventos.api.serializers.eventos.Asistencias_serializers import AsistenciaSerializer, AsistenciarReporteSerializer
 from src.application.eventos.api.serializers.eventos.eventos_serialziers import EventosCreateSerializer, EventosSerializer, EventosSimpleSerializer
 from django.db import transaction
 from src.application.eventos.api.serializers.eventos.ponentes_serializer import PonentesExternosCreateSerializer, PonentesExternosSerializerVew, PonentesVinculacionCreateSerializer, PonentesVinculacionSerializerView
-from src.application.eventos.models.models import Asistencia, Eventos, EventosServicios, EventosStatus, PonentesExternos, PonentesVinculacion
+from src.application.eventos.models.models import Asistencia, AsistenciaExternos, Eventos, EventosServicios, EventosStatus, PonentesExternos, PonentesVinculacion
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 import json
+from django.db.models import Count
 class EventosView(APIView):
     def get(self, request, *args, **kwargs):
         try:
@@ -82,13 +83,44 @@ class EventoDetailView(APIView):
             serializer_ponentes_vinculacion = PonentesVinculacionSerializerView(ponentes_vinculacion, many=True)
             serializer_ponentes_externos = PonentesExternosSerializerVew(ponentes_externos, many=True)
             
+            asistencias = Asistencia.objects.filter(actividad=actividad_id)
+            asistencias_externos = AsistenciaExternos.objects.filter(actividad=actividad_id)
+            conteo_externos = asistencias_externos.values('vinculacion').annotate(conteo=Count('vinculacion'))
+
+            asistencias_serializer = AsistenciarReporteSerializer(asistencias, many=True)
+            resultados_externos = {}
             
+            for item in conteo_externos:
+                vinculacion = item['vinculacion']
+                conteo = item['conteo']
+                resultados_externos[vinculacion] = conteo
+            
+            resultados_asistencias_graduados = 0
+            resultados_asistencias_funcionarios = 0
+            
+            for persona in asistencias_serializer.data:
+                if persona['asistencia'] and persona['graduado']:
+                    resultados_asistencias_graduados += 1
+                elif persona['asistencia'] and persona['funcionario']:
+                    resultados_asistencias_funcionarios += 1
+
+            asistencias_list = [
+                {"name": "Graduados", "cantidad": resultados_asistencias_graduados},
+                {"name": "Funcionarios", "cantidad": resultados_asistencias_funcionarios},
+            ]
+
+            # Agregar los datos de asistencias externas al resultado
+            for vinculacion, conteo in resultados_externos.items():
+                asistencias_list.append({"name": vinculacion, "cantidad": conteo})
+    
+    
             return Response({
                 "actividad": serializer_evento.data,
                 "ponentes": {
                     "vinculacion": serializer_ponentes_vinculacion.data,
                     "externos": serializer_ponentes_externos.data,
                     },
+                "asistencias":asistencias_list,
                 }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)

@@ -115,3 +115,11 @@ class AsistenciaExternos(BaseModel):
     
     class Meta:
         unique_together = ("actividad", "document")
+        
+class Evidencias(BaseModel):
+    actividad = models.ForeignKey(Eventos, on_delete=models.CASCADE, db_index=True, unique=False)
+    titulo = models.CharField(max_length=150, blank=False, default="")
+    archivo = models.FileField(upload_to='eventos/%Y/%m/', blank=False, null=True) 
+    
+    def __str__(self):
+        return self.titulo
