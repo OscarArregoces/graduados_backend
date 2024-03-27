@@ -5,7 +5,7 @@ from rest_framework import status
 from configs.helpers.PaginationView import DecoratorPaginateView
 from configs.helpers.formatDate import formatDate
 from configs.helpers.excelTools import formateCondicionVulnerable, formateDepartamento, formateDocumentType, formateGenderType, formateMunicipio, formateNationaliy
-from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers
+from src.application.auth_module.api.serializers.carrera.carrera_serializers import CarreraSerializers, CarreraSimpleSerializers
 
 from src.application.auth_module.api.serializers.person.persons_serializers import PersonsCreateSerializer, PersonsDetailSerializers, PersonsSimpleSerializersView, UserEventoSerializer
 from src.application.auth_module.api.serializers.roles.roles_serializers import RolesSerializers
@@ -28,6 +28,8 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.db import transaction
+from datetime import datetime
+
 
 CACHE_TTL = getattr(settings, "CACHE_TTL", DEFAULT_TIMEOUT)
 
@@ -133,24 +135,32 @@ class UserChangePasswordView(UpdateAPIView):
 
 
 class GraduadosView(APIView):
-    # @DecoratorPaginateView
     def get(self, request, *args, **kwargs):
         try:
             graduado_id = kwargs.get("graduado_id",None)
             print(kwargs)
             if graduado_id: 
-                # graduado = get_object_or_404(Persons, identification=graduado_id, graduado=True)
                 graduado = Persons.objects.filter(graduado=True,identification=graduado_id).exclude(id__in=[1, 2])
                 serializer = PersonsSimpleSerializersView(graduado, many=True)
-                # return serializer.data
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else :
                 personas = Persons.objects.filter(graduado=True).exclude(id__in=[1, 2]).all()
-                serializer = PersonsSimpleSerializersView(personas, many=True)
-                # return serializer.data
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                personas_con_carreras = []
+
+                for persona in personas:
+                    carreras = Carrera.objects.filter(person=persona)  
+                    persona_data = PersonsSimpleSerializersView(persona).data
+                    carreras_data = []
+                    for carrera in carreras:
+                        serializer_carrera = CarreraSimpleSerializers(carrera)
+                        carreras_data.append(serializer_carrera.data)
+                           
+                    persona_data['carreras'] = carreras_data
+                    personas_con_carreras.append(persona_data)
+
+                return Response(personas_con_carreras, status=status.HTTP_200_OK)
         except Exception as e :
-           return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class GraduadoDetailView(APIView):
     def get(self, request, graduado_id, *args, **kwargs):
@@ -329,6 +339,98 @@ class CargarUsuariosExcel(APIView):
                         Carrera.objects.create(**carrera_data)
                         
                 return Response({'message': 'Usuarios cargados correctamente'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': f'Error al procesar el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'No se proporcionó un archivo Excel'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    
+class GenerarJsonByExcel(APIView):
+    @transaction.atomic       
+    def post(self, request, *args, **kwargs):
+        archivo_excel = request.FILES.get('archivo_excel')
+        if archivo_excel:
+            try:
+                df = pd.read_excel(archivo_excel)
+                personas_con_carreras = []
+                
+                for index, row in df.iterrows():
+                    persona_existente = False
+                    
+                    for persona in personas_con_carreras:
+                        if persona['persona']["identification"] == row['NUM_DOCUMENTO']:
+                            carrera_data = {
+                                'programa': row['PROGRAMA DE GRADO'] if pd.notna(row['PROGRAMA DE GRADO']) else "",
+                                # 'fecha_grado': row['FECHA DE GRADO'].strftime('%Y-%m-%d') if pd.notna(row['FECHA DE GRADO']) else "",
+                                'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
+                                'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
+                                'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",
+                                'numero_acta': row['NUMERO DE ACTA'] if pd.notna(row['NUMERO DE ACTA']) else "",
+                                'numero_folio': row['NUMERO DE FOLIO'] if pd.notna(row['NUMERO DE FOLIO']) else "",
+                                'sede': row['SEDE'] if pd.notna(row['SEDE']) else "",
+                                'direccion_intitucional': row['DIRECCION_INSTITUCIONAL'] if pd.notna(row['DIRECCION_INSTITUCIONAL']) else "",
+                            }
+                            persona['carreras'].append(carrera_data)
+                            persona_existente = True
+                            break
+                    
+                    if not persona_existente:
+                        payload = {
+                            "user":{},
+                            "persona": {
+                                "identification": row['NUM_DOCUMENTO']
+                            },
+                            "carreras": []
+                        }
+                        gender_type = formateGenderType(row['GENERO'])
+                        document_type = formateDocumentType(row['TIPO_IDENTIFICACION'])
+                        condicion_vulnerable = formateCondicionVulnerable(row['CONDICION VULNERABLE'])
+                        nationality = formateNationaliy(row['PAIS DE NACIMIENTO'])
+                        departamento = formateDepartamento(row['CIUDAD(DPTO)'])
+                        ciudad = formateMunicipio(row['CIUDAD(DPTO)'])
+                        
+                        person_data = {
+                            'fullname': row['NOMBRE'] if pd.notna(row['NOMBRE']) else "",
+                            'address': row['DIRECCION'] if pd.notna(row['DIRECCION']) else "",
+                            'nationality_id': nationality,
+                            'departamento_id': departamento,
+                            'municipio_id': ciudad,
+                            'phone': row['CELULAR'] if pd.notna(row['CELULAR']) else "",
+                            'phone2': row['CELULAR 2'] if pd.notna(row['CELULAR 2']) else "",
+                            # 'fecha_expedicion': row['FECHA_EXPEDICION'].strftime('%Y-%m-%d') if pd.notna(row['FECHA_EXPEDICION']) else "", 
+                            # 'date_of_birth': row['FECHA_NACIMIENTO'].strftime('%Y-%m-%d') if pd.notna(row['FECHA_NACIMIENTO']) else "", 
+                            'condicion_vulnerable_id': condicion_vulnerable,
+                            'email': row['CORREO'] if pd.notna(row['CORREO']) else "",
+                            'email2': row['CORREO 2'] if pd.notna(row['CORREO 2']) else "",
+                            'document_type_id': document_type,
+                            'gender_type_id': gender_type,
+                        }
+                        payload['persona'].update(person_data)
+                        
+                        user_data = {
+                            'username': str(row['NUM_DOCUMENTO']),
+                            'password': str(row['NUM_DOCUMENTO']),
+                        }
+                        
+                        payload['user'] = user_data
+                        
+                        carrera_data = {
+                            'programa': row['PROGRAMA DE GRADO'],
+                            # 'fecha_grado': row['FECHA DE GRADO'].strftime('%Y-%m-%d') if pd.notna(row['FECHA DE GRADO']) else "",
+                            'modalidad_grado':  row['MODALIDAD_GRADO'] if pd.notna(row['MODALIDAD_GRADO']) else "",
+                            'proyecto_grado': row['PROYECTO DE GRADO'] if pd.notna(row['PROYECTO DE GRADO']) else "",
+                            'periodo_grado': row['PERIODO DE GRADO'] if pd.notna(row['PERIODO DE GRADO']) else "",
+                            'numero_acta': row['NUMERO DE ACTA'] if pd.notna(row['NUMERO DE ACTA']) else "",
+                            'numero_folio': row['NUMERO DE FOLIO'] if pd.notna(row['NUMERO DE FOLIO']) else "",
+                            'sede': row['SEDE'] if pd.notna(row['SEDE']) else "",
+                            'direccion_intitucional': row['DIRECCION_INSTITUCIONAL'] if pd.notna(row['DIRECCION_INSTITUCIONAL']) else "",
+                        }
+                        payload['carreras'].append(carrera_data)
+                        personas_con_carreras.append(payload)
+                
+
+                return Response({'graduados':  personas_con_carreras}, status=status.HTTP_200_OK)
             except Exception as e:
                 return Response({'error': f'Error al procesar el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
         else:

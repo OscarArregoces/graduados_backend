@@ -63,7 +63,6 @@ class Eventos(BaseModel):
     sede = models.ForeignKey(Headquarters, on_delete=models.SET_NULL, blank=True, null=True)
     dependencia = models.ForeignKey(Gestor, on_delete=models.SET_NULL, blank=True, null=True)
     estado_actividad = models.ForeignKey(EventosStatus, on_delete=models.SET_NULL, blank=True, null=True)
-    
     class Meta:
         verbose_name = "Evento"
         verbose_name_plural = "Eventos"
@@ -123,3 +122,45 @@ class Evidencias(BaseModel):
     
     def __str__(self):
         return self.titulo
+
+
+class Presupuesto(BaseModel):
+    actividad = models.OneToOneField(Eventos, on_delete=models.CASCADE,blank=True, null=True)
+    total_presupuesto = models.DecimalField(max_digits=15, decimal_places=2)
+    
+    class Meta:
+        verbose_name = "Presupuesto"
+        verbose_name_plural = "Presupuesto"
+
+class Item(BaseModel):
+    presupuesto = models.ForeignKey(Presupuesto, on_delete=models.CASCADE)
+    item = models.CharField(max_length=100, blank=False, null=False)
+    cantidad = models.IntegerField()
+    valor_unitario = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    inversion_uniguajira = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    especie_uniguajira = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    inversion_cofinanciador = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    especie_cofinanciador = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    nombre = models.CharField(max_length=100, blank=True, null=True)
+    valor = models.DecimalField(max_digits=15, decimal_places=2, blank=False, null=False)
+    
+    class Meta:
+        abstract = True
+
+class BienEquipo(Item):
+    class Meta:
+        verbose_name = "Biene y equipo"
+        verbose_name_plural = "Bienes y equipos"
+
+class MaterialSuministro(Item):
+    class Meta:
+        verbose_name = "Material y suministro"
+        verbose_name_plural = "Materiales y suministros"
+
+class Personal(Item):
+    class Meta:
+        verbose_name = "Personal"
+        verbose_name_plural = "Personal"
+        
+        
+        

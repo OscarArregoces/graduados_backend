@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from configs.seeds.GraduadosSeed import GraduadosSeed
 from configs.seeds.UniversidadSeed import SedesSeed
 import src.validators.index
 import re
@@ -11,6 +12,8 @@ from configs.seeds.EventosSeed import AreasActividadSeed, EventosStatusSeed, Ser
 from configs.seeds.AuthSeed import CondicionesSeed, DocumentTypeSeed, GendersSeed, GestoresSeed, GroupsSeed, PersonsSeed, UsersSeed
 from configs.seeds.ClasificadosSeed import CapacitacionesSeed, EmprendimientosSeed
 from configs.seeds.PaisesSeed import CiudadesSeed, DepartamentosSeed, PaisesSeed
+
+
 
 class Migration(migrations.Migration):
 
@@ -87,6 +90,7 @@ class Migration(migrations.Migration):
         
         User = apps.get_model("auth_module", "User") # type: ignore
         Person = apps.get_model("auth_module", "Persons") # type: ignore
+        Carrera = apps.get_model("auth_module", "Carrera") # type: ignore
         User_roles = apps.get_model("auth_module", "user_groups") # type: ignore
         User_documents = apps.get_model("auth_module", "document_types") # type: ignore
         User_genders = apps.get_model("auth_module", "genders") # type: ignore
@@ -100,6 +104,20 @@ class Migration(migrations.Migration):
         Person.objects.bulk_create([Person(**data) for data in PersonsSeed])
         
         User.objects.bulk_create([User(**data) for data in UsersSeed])
+        
+        # CARGA DE GRADUADOS
+        for graduado in GraduadosSeed:
+            persona_data = graduado['persona']
+            persona = Person.objects.create(**persona_data)
+
+            user_data = graduado['user']
+            user_data['person_id'] = persona.id  
+            user = User.objects.create(**user_data)
+
+            carreras_data = graduado['carreras']
+            for carrera_data in carreras_data:
+                carrera_data['person_id'] = persona.id 
+                Carrera.objects.create(**carrera_data)
         
         user = User.objects.all()
         roles = Group.objects.all()
@@ -196,6 +214,8 @@ class Migration(migrations.Migration):
             Sedes.objects.all().delete()
             EventosStatus = apps.get_model("eventos", "EventosStatus") # type: ignore
             EventosStatus.objects.all().delete()
+            Carrera = apps.get_model("auth_module", "Carrera") # type: ignore
+            Carrera.objects.all().delete()
             
         
 

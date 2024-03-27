@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .users import CargarUsuariosExcel, FuncionarioRolesView, FuncionariosView, GraduadoDetailView, GraduadosView, UserChangePasswordView, UserEventoView
+from .users import CargarUsuariosExcel, FuncionarioRolesView, FuncionariosView, GenerarJsonByExcel, GraduadoDetailView, GraduadosView, UserChangePasswordView, UserEventoView
 
 from django.conf.urls import include
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("change/password/", UserChangePasswordView.as_view()),
     path('cargar-usuarios/', CargarUsuariosExcel.as_view(), name='cargar-usuarios'),
+    path('usuariosToJson/', GenerarJsonByExcel.as_view(), name='cargar-usuarios'),
     re_path("graduados/?(?P<graduado_id>[0-9]+)?/$", GraduadosView.as_view(), name="graduados"),
     re_path("funcionarios/?(?P<funcionario_id>[0-9]+)?/$", FuncionariosView.as_view(), name="funcionarios"),
     path("funcionarios/roles/<int:funcionario_id>/", FuncionarioRolesView.as_view()),

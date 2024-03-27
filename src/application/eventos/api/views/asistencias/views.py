@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView   
 from rest_framework.response import Response
 from rest_framework import status
+from configs.helpers.AsistenciasTools import CalcularConteoAsistencias, CalcularConteoExternos, CalcularConteoProgramas, CalcularImpactosAsistencias, SepararGraduadosFuncionarios
 from src.application.auth_module.models import User
 from src.application.eventos.api.serializers.eventos.Asistencias_serializers import AsistenciaCreateSerializer, AsistenciaExternoCreateSerializer, AsistenciaReporteExternosSerializer, AsistenciarReporteSerializer
 from src.application.eventos.models.models import Asistencia, AsistenciaExternos, Eventos
@@ -17,72 +18,46 @@ class AsistenciasView(APIView):
             return Response({"error":"actividad_id es requerido"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
+            actividadFound = Eventos.objects.filter(id=actividad_id).first()
+            if actividadFound is None:
+                return Response({"error":"Actividad no existe"}, status=status.HTTP_404_NOT_FOUND)
+            
             asistencias = Asistencia.objects.filter(actividad=actividad_id)
             asistencias_externos = AsistenciaExternos.objects.filter(actividad=actividad_id)
+            asistenciasProgramas = Asistencia.objects.filter(actividad=actividad_id, asistencia=True, user__person__graduado=True)
             
             asistencias_serializer = AsistenciarReporteSerializer(asistencias, many=True)
-            asistencias_externos_serializer = AsistenciaReporteExternosSerializer(asistencias_externos, many=True)
             
             # IMPACTO
-            
-            confirmacion_asistencia = defaultdict(int)
-            asistencia_real = defaultdict(int)
-
-            # Iterar sobre las asistencias
-            for asistencia in asistencias:
-                # Contar confirmaciones de asistencia
-                if asistencia.confirmacion:
-                    confirmacion_asistencia['confirmaron'] += 1
-                else:
-                    confirmacion_asistencia['no_confirmaron'] += 1
-                
-                # Contar asistencias reales
-                if asistencia.asistencia:
-                    asistencia_real['asistieron'] += 1
-                else:
-                    asistencia_real['no_asistieron'] += 1
+            confirmacion_asistencia, asistencia_real = CalcularImpactosAsistencias(asistencias)
 
             # CONTEO
-            
             conteo_externos = asistencias_externos.values('vinculacion').annotate(conteo=Count('vinculacion'))
-            resultados_externos = {}
-            
-            for item in conteo_externos:
-                vinculacion = item['vinculacion']
-                conteo = item['conteo']
-                resultados_externos[vinculacion] = conteo
-            
-            resultados_asistencias_graduados = 0
-            resultados_asistencias_funcionarios = 0
-            
-            for persona in asistencias_serializer.data:
-                if persona['asistencia'] and persona['graduado']:
-                    resultados_asistencias_graduados += 1
-                elif persona['asistencia'] and persona['funcionario']:
-                    resultados_asistencias_funcionarios += 1
+            resultados_externos = CalcularConteoExternos(conteo_externos)
 
+            total_graduados, total_funcionarios = CalcularConteoAsistencias(asistencias_serializer.data)
+            total_programas = CalcularConteoProgramas(asistenciasProgramas)
+            
+            resultados_asistencias_graduados = total_graduados
+            resultados_asistencias_funcionarios = total_funcionarios
+  
             asistencias_list = [
                 {"name": "graduados", "cantidad": resultados_asistencias_graduados},
                 {"name": "funcionarios", "cantidad": resultados_asistencias_funcionarios},
             ]
 
-            # Agregar los datos de asistencias externas al resultado
             for vinculacion, conteo in resultados_externos.items():
                 asistencias_list.append({"name": vinculacion, "cantidad": conteo})
             
+            # RESPONSE
             return Response({
+                "nombre_actividad": actividadFound.nombre_actividad,
                 "conteo": asistencias_list,
                 "impactos": [
                     {"name": "Confirmación Asistencia", "si": confirmacion_asistencia['confirmaron'] , "no": confirmacion_asistencia['no_confirmaron']},
                     {"name": "Asistencia", "si": asistencia_real['asistieron'] , "no": asistencia_real['no_asistieron']},
-                    
-                    # {"name": "Confirmaron asistencia", "value": confirmacion_asistencia['confirmaron']},
-                    # {"name": "No confirmaron asistencia", "value": confirmacion_asistencia['no_confirmaron']},
-                    # {"name": "Asistieron", "value": asistencia_real['asistieron']},
-                    # {"name": "No asistieron", "value": asistencia_real['no_asistieron']},
                 ],
-                "asistencia": asistencias_serializer.data, 
-                "asistencia_externos": asistencias_externos_serializer.data
+                "programas": total_programas,
                 }, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
@@ -182,6 +157,11 @@ class AsistenciasDetalleView(APIView):
             return Response({"error":"actividad_id es requerido"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
+            # BUSQUEDA ACTIVIDAD
+            actividadFound = Eventos.objects.filter(id=actividad_id).first()
+            if actividadFound is None:
+                return Response({"error":"Actividad no existe"}, status=status.HTTP_404_NOT_FOUND)
+            
             asistencias = Asistencia.objects.filter(actividad=actividad_id)
             asistencias_externos = AsistenciaExternos.objects.filter(actividad=actividad_id)
             
@@ -189,7 +169,18 @@ class AsistenciasDetalleView(APIView):
             asistencias_externos_serializer = AsistenciaReporteExternosSerializer(asistencias_externos, many=True)
 
             # CONTEO
+            total_graduados, total_funcionarios = CalcularConteoAsistencias(asistencias_serializer.data)
+            asistencias_graduados, asistencias_funcionarios = SepararGraduadosFuncionarios(asistencias_serializer.data)
             
+            resultados_asistencias_graduados = total_graduados
+            resultados_asistencias_funcionarios = total_funcionarios
+            
+            conteo_list = [
+                {"name": "Graduados", "cantidad": resultados_asistencias_graduados},
+                {"name": "Funcionarios", "cantidad": resultados_asistencias_funcionarios},
+            ]
+              
+            # EXTERNOS
             conteo_externos = asistencias_externos.values('vinculacion').annotate(conteo=Count('vinculacion'))
             resultados_externos = {}
             
@@ -198,27 +189,15 @@ class AsistenciasDetalleView(APIView):
                 conteo = item['conteo']
                 resultados_externos[vinculacion] = conteo
             
-            resultados_asistencias_graduados = 0
-            resultados_asistencias_funcionarios = 0
-            
-            for persona in asistencias_serializer.data:
-                if persona['asistencia'] and persona['graduado']:
-                    resultados_asistencias_graduados += 1
-                elif persona['asistencia'] and persona['funcionario']:
-                    resultados_asistencias_funcionarios += 1
 
-            asistencias_list = [
-                {"name": "Graduados", "cantidad": resultados_asistencias_graduados},
-                {"name": "Funcionarios", "cantidad": resultados_asistencias_funcionarios},
-            ]
-
-            # Agregar los datos de asistencias externas al resultado
             for vinculacion, conteo in resultados_externos.items():
-                asistencias_list.append({"name": vinculacion, "cantidad": conteo})
+                conteo_list.append({"name": vinculacion, "cantidad": conteo})
             
             return Response({
-                "conteo": asistencias_list,
-                "asistencia": asistencias_serializer.data, 
+                "nombre_actividad": actividadFound.nombre_actividad,
+                "conteo": conteo_list,
+                "asistencia_graduados": asistencias_graduados, 
+                "asistencia_funcionarios": asistencias_funcionarios, 
                 "asistencia_externos": asistencias_externos_serializer.data
                 }, status=status.HTTP_200_OK)
         except Exception as e:

@@ -11,3 +11,11 @@ class CarreraSerializers(serializers.ModelSerializer):
         model = Carrera
         exclude = ("userCreate", "userUpdate", "name","createdAt","updateAt", "visible","person")
         # fields = '__all__'
+        
+class CarreraSimpleSerializers(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    programa =  serializers.CharField(read_only=True)
+    # class Meta:
+    #     model = Carrera
+    #     fields = ('id','programa')
+    #     read_only_fields = fields

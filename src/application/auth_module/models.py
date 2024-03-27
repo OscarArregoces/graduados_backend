@@ -69,6 +69,7 @@ class Ciudad(BaseModel):
     sap = models.CharField(max_length=10)
     name = models.CharField(max_length=200)
     departamento = models.ForeignKey(Departamento, on_delete=models.SET_NULL, blank=True, null=True )
+    pais = models.ForeignKey(Pais, on_delete=models.SET_NULL, blank=True, null=True )
 
     class Meta:
         verbose_name = "Ciudad"

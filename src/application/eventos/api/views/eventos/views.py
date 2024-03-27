@@ -1,6 +1,7 @@
 from rest_framework.views import APIView   
 from rest_framework.response import Response
 from rest_framework import status
+from configs.helpers.enviarCorreos import EnviarCorreos
 from src.application.eventos.api.serializers.eventos.Asistencias_serializers import AsistenciaSerializer, AsistenciarReporteSerializer
 from src.application.eventos.api.serializers.eventos.eventos_serialziers import EventosCreateSerializer, EventosSerializer, EventosSimpleSerializer
 from django.db import transaction
@@ -10,6 +11,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 import json
 from django.db.models import Count
+
+
 class EventosView(APIView):
     def get(self, request, *args, **kwargs):
         try:
@@ -238,4 +241,19 @@ class InscripcionView(APIView):
             Asistencia.objects.create(actividad_id=actividad_id, user=request.user, confirmacion=True)
 
         return Response({'success': 'Asistencia confirmada'}, status=status.HTTP_200_OK)
+    
+class EnviarCorreo(APIView):
+  def post(self, request, *args, **kwargs):
+        destinatarios = ["oiarregoces@uniguajira.edu.co",]
+        asunto = "¡Tu presencia es clave! 🎓 Confirma tu Asistencia"
+        template = 'EventosNotificacion.html'
+        # contexto = {'destinatario': 'Oscar Arregoces','destinatario': 'Ivan Riveira'}
+        # EnviarCorreos(destinatarios, asunto, template, contexto)
+        contextos = [
+            {'destinatario': 'Oscar Arregoces', 'documento' : '1118874652'},
+        ]
         
+        for destinatario, contexto in zip(destinatarios, contextos):
+            EnviarCorreos([destinatario], asunto, template, contexto)
+        return Response({'mensaje': 'Correo enviado exitosamente'})
+    

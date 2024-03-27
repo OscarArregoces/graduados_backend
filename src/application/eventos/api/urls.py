@@ -11,4 +11,5 @@ urlpatterns = [
     path("servicios/", include(f"{PATH_APP}.eventos.api.views.servicios.urls")),
     path("asistencias/", include(f"{PATH_APP}.eventos.api.views.asistencias.urls")),
     path("evidencias/", include(f"{PATH_APP}.eventos.api.views.evidencias.urls")),
+    path("presupuesto/", include(f"{PATH_APP}.eventos.api.views.presupuesto.urls")),
 ]

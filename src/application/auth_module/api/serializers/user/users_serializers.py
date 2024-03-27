@@ -124,3 +124,4 @@ class UserPonentesSerializer(serializers.Serializer):
     
 class UserAsistenciaSerializer(serializers.Serializer):
     person = PersonAsistenciaSerializers(read_only=True)
+    

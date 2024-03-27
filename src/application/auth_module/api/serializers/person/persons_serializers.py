@@ -1,4 +1,3 @@
-from attr import fields
 from src.application.auth_module.api.serializers.condiciones.codiciones_serializers import CondicionesVulnerablesSerializers
 from src.application.auth_module.api.serializers.gestor.gestor_serializer import GestorSerializer
 from src.application.auth_module.api.serializers.nationality.ciudad_serializer import CiuadadSerializer
@@ -66,14 +65,15 @@ class PersonsDetailSerializers(ModelSerializer):
         model = Persons
         exclude = ("createdAt", "updateAt", "visible", "userCreate", "userUpdate", "status","name")
     
-class PersonsSimpleSerializersView(ModelSerializer):
-
+class PersonsSimpleSerializersView(Serializer):
+    id = IntegerField(read_only=True)
     nationality = PaisSerializer(read_only=True)
-    gender_type = GenderSerializersView(read_only=True)
+    fullname = CharField(read_only=True)
+    identification = CharField(read_only=True)
     
-    class Meta:
-        model = Persons
-        fields = ('id','fullname','email','nationality','identification','gender_type','phone')
+    # class Meta:
+    #     model = Persons
+    #     fields = ('id','fullname','nationality','identification',)
 
 class UserEventoSerializer(ModelSerializer):
     
@@ -131,8 +131,10 @@ class PersonPonentesSerializers(Serializer):
     phone = CharField(read_only=True)
     
 class PersonAsistenciaSerializers(Serializer):
+    id = IntegerField(read_only=True)
     fullname = CharField(read_only=True)
     email = EmailField(read_only=True)
     graduado = BooleanField(read_only=True)
     funcionario = BooleanField(read_only=True)
+
 
